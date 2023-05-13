@@ -6,11 +6,13 @@ class DataBase:
         file = open(self.users_file_name, "r")
         success = False
         for line in file.readlines():
-            arguments = line.split(";")
-            login_db = arguments[0]
-            password_db = arguments[1]
-            if login_db == login and password_db == password:
-                success = True
+            print(line)
+            if len(line.strip()) != 0:
+                arguments = line.split(";")
+                login_db = arguments[0]
+                password_db = arguments[1]
+                if login_db == login and password_db == password:
+                    success = True
         file.close()
         return success
 
@@ -32,6 +34,7 @@ class DataBase:
             return False
         else:
             file = open(self.users_file_name, "a")
-            file.write("\n" + login + ";" + password)
+            file.write(login + ";" + password + ";" + "\n")
+            file.close()
             return True
 

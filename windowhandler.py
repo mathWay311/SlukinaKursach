@@ -155,7 +155,6 @@ class FrameHandler:
             else:
                 messagebox.showerror("Предупреждение", "Такой логин уже существует")
         else:
-            print(code)
             messagebox.showerror("Ошибка", utility.errorcodes_descriptions[code])
 
 
