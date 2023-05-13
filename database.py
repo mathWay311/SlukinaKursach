@@ -34,7 +34,7 @@ class DataBase:
             return False
         else:
             file = open(self.users_file_name, "a")
-            file.write(login + ";" + password + ";" + "\n")
+            file.write(login + ";" + password + ";user;" + "\n")
             file.close()
             return True
 
