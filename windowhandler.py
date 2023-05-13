@@ -3,6 +3,9 @@ import database as db
 from tkinter import ttk
 from tkinter import messagebox
 
+import utility
+
+
 class FrameHandler:
 
     # Описание всех фреймов ---->
@@ -144,11 +147,16 @@ class FrameHandler:
     def click_registration_submit(self):
         login = self.registration_field_login.get()
         password = self.registration_field_password.get()
-        result = self.database.registration(login, password)
-        if result == True:
-            messagebox.showinfo("Уведомление", "Вы успешно зарегистрировались")
+        code = utility.check_login_and_password_for_register(login, password)
+        if code == 100:
+            result = self.database.registration(login, password)
+            if result == True:
+                messagebox.showinfo("Уведомление", "Вы успешно зарегистрировались")
+            else:
+                messagebox.showerror("Предупреждение", "Такой логин уже существует")
         else:
-            messagebox.showwarning("Предупреждение", "Такой логин уже существует")
+            print(code)
+            messagebox.showerror("Ошибка", utility.errorcodes_descriptions[code])
 
 
     # По нажатию на кнопку Войти
