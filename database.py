@@ -14,19 +14,24 @@ class DataBase:
         file.close()
         return success
 
-    def registration(self, login, password):
-        file = open(self.users_file_name, "r+")
-        success = True
-        for line in file:
-            line = line.split(";")
-            if login == line[0]:
-                success = False
-                file.close()
-                break
-            else:
-                file.write(login + ";" + password + "\n")
-                file.close()
-                break
-
+    def check_account_presence(self, login):
+        file = open(self.users_file_name, "r")
+        success = False
+        for line in file.readlines():
+            arguments = line.split(";")
+            login_db = arguments[0]
+            if login_db == login:
+                success = True
+        file.close()
         return success
+
+    def registration(self, login, password):
+        is_account_present = self.check_account_presence(login)
+
+        if is_account_present:
+            return False
+        else:
+            file = open(self.users_file_name, "a")
+            file.write("\n" + login + ";" + password)
+            return True
 
