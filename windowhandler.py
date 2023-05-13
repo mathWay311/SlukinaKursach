@@ -149,7 +149,7 @@ class FrameHandler:
         password = self.registration_field_password.get()
         code = utility.check_login_and_password_for_register(login, password)
         if code == 100:
-            result = self.database.registration(login, password)
+            result = self.database.user_registration(login, password)
             if result == True:
                 messagebox.showinfo("Уведомление", "Вы успешно зарегистрировались")
             else:

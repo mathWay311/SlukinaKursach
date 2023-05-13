@@ -27,7 +27,7 @@ class DataBase:
         file.close()
         return success
 
-    def registration(self, login, password):
+    def user_registration(self, login, password):
         is_account_present = self.check_account_presence(login)
 
         if is_account_present:
