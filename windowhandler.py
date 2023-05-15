@@ -15,8 +15,8 @@ class FrameHandler:
         self.main_window_frame = tk.Frame(root_window) #Создаём фрейм
 
         self.main_label_welcome = tk.Label(self.main_window_frame, text="Добро пожаловать!", font=("Arial Bold", 20)) # Создаём лэйбел, первым параметром указываем какому фрейму принадлежит
-        self.main_label_welcome .place(x=75, y=30) # Помещаем в пространстве, хотя как я понял это необязательно при использовании фреймов
-        self.main_label_welcome .pack(padx=30, pady=20) # Упаковываем лэйбел в фрэйм, говорим что отступ о иксу от других элементов - 30, по игреку - 20
+        self.main_label_welcome.place(x=75, y=30) # Помещаем в пространстве, хотя как я понял это необязательно при использовании фреймов
+        self.main_label_welcome.pack(padx=30, pady=20) # Упаковываем лэйбел в фрэйм, говорим что отступ о иксу от других элементов - 30, по игреку - 20
 
         self.main_button_entry = tk.Button(self.main_window_frame, text="Войти", width=40, height=2, fg="#A62A00",
                                            command=self.click_enter)
@@ -104,6 +104,24 @@ class FrameHandler:
         self.registration_button_back.place(x=55, y=100)
         self.registration_button_back.pack(padx=30, pady=20)
 
+    # Основное окно машиниста
+
+    def create_machinist_main_window(self, root_window, login):
+        self.machinist_window_frame = tk.Frame(root_window)
+
+        self.machinist_main_window_label_info = tk.Label(self.machinist_window_frame, text="Добро пожаловать, " + login + "\n" + "Вы вошли в систему как машинист", font=("Arial Bold", 15))
+        self.machinist_main_window_label_info.place(x=120, y=45)
+        self.machinist_main_window_label_info.pack()
+
+        self.machinist_timetable_button_submit = tk.Button(self.machinist_window_frame, text="Выйти из системы", width=40,
+                                                    height=2,
+                                                    fg="#A62A00",
+                                                    command=self.click_back_to_main)
+        self.machinist_timetable_button_submit.place(x=55, y=100)
+        self.machinist_timetable_button_submit.pack(padx=30, pady=20)
+
+
+
     # Основное окно пользователя
     def create_users_main_window(self, root_window):
         self.user_main_window = tk.Frame(root_window)
@@ -112,7 +130,6 @@ class FrameHandler:
                                                 font=("Arial Bold", 16))
         self.user_main_window_label_info.place(x=120, y=45)
         self.user_main_window_label_info.pack()
-
 
 
     # Сменить фрейм по имени
@@ -127,11 +144,12 @@ class FrameHandler:
         self.create_entry_frame(root_window)
         self.create_registration_frame(root_window)
         self.create_users_main_window(root_window)
+        self.create_machinist_main_window(root_window, self.registration_field_login.get())
 
         self.database = database
 
         self.current_frame_name = "MAIN_FRAME" # Создаём переменную для хранения названия текущего фрейма
-        self.frame_dictionary = {"MAIN_FRAME": self.main_window_frame, "ENTRY_FRAME": self.entry_window_frame, "REGISTRATION_FRAME": self.registration_window_frame, "USER_MAIN_FRAME": self.user_main_window} # Создаём структуру данных для удобного обращения к фреймам по строковому имени
+        self.frame_dictionary = {"MAIN_FRAME": self.main_window_frame, "ENTRY_FRAME": self.entry_window_frame, "REGISTRATION_FRAME": self.registration_window_frame, "USER_MAIN_FRAME": self.user_main_window, "MACHINIST_MAIN_FRAME": self.machinist_window_frame} # Создаём структуру данных для удобного обращения к фреймам по строковому имени
 
     # Логика нажатия кнопок -------->
 
@@ -142,7 +160,12 @@ class FrameHandler:
         self.switch_to_frame("ENTRY_FRAME")
 
     def click_back_to_main(self):
-        self.switch_to_frame("MAIN_FRAME")
+        self.answer = messagebox.askyesno(
+            title="Подтверждение",
+            message="Вы уверены?")
+        if self.answer:
+            self.switch_to_frame("MAIN_FRAME")
+
 
     def click_registration_submit(self):
         login = self.registration_field_login.get()
@@ -167,9 +190,17 @@ class FrameHandler:
         # Просим базу данных чекнуть есть ли такая запись о пользователе.
         result = self.database.check_login(login, password)
 
-        if result == True:
+        if result == 101:
             self.switch_to_frame("USER_MAIN_FRAME")
-            self.user_main_window_label_info.config(text = "Добро пожаловать, " + login)
+            self.user_main_window_label_info.config(text = "Добро пожаловать, " + login + "\n" + "Вы вошли в систему как администратор")
+        elif result == 102:
+            self.switch_to_frame("USER_MAIN_FRAME")
+            self.user_main_window_label_info.config(text="Добро пожаловать, " + login + "\n" + "Вы вошли в систему как пассажир")
+        elif result == 103:
+            self.switch_to_frame("USER_MAIN_FRAME")
+            self.user_main_window_label_info.config(text="Добро пожаловать, " + login + "\n" + "Вы вошли в систему как кассир")
+        elif result == 104:
+            self.switch_to_frame("MACHINIST_MAIN_FRAME")
         else:
             messagebox.showerror("Ошибка!", "Такого пользователя не существует или пароль неверный")
 
@@ -180,7 +211,7 @@ class MainWindow():
     def __init__ (self):
         self.window = tk.Tk()
         self.window.title('Железнодорожный вокзал')
-        self.window.geometry("400x400")
+        self.window.geometry("600x500")
         self.window.resizable(True, True)
 
         self.database = db.DataBase("users.db")
