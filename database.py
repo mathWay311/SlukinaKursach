@@ -16,7 +16,6 @@ class DataBase:
     def check_login(self, login, password):
         file = open(self.users_file_name, "r")
         for line in file.readlines():
-            print(line)
             if len(line.strip()) != 0:
                 arguments = line.split(";")
                 login_db = arguments[0]

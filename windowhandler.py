@@ -67,6 +67,9 @@ class FrameHandler:
         self.entry_button_back.place(x=55, y=100)
         self.entry_button_back.pack(padx=30, pady=20)
 
+        print(self.entry_field_login.get())
+        return self.entry_field_login.get()
+
         #self.entry_window_frame.pack()  Здесь ничего паковать не надо, потому  что при входе мы не видим этого фрейма.
 
     # Меню регистрации
@@ -121,6 +124,25 @@ class FrameHandler:
         self.machinist_timetable_button_submit.pack(padx=30, pady=20)
 
 
+    def create_cashier_main_window(self, root_window, login):
+        self.cashier_window_frame = tk.Frame(root_window)
+
+        self.cashier_main_window_label_info = tk.Label(self.cashier_window_frame,
+                                                         text="Добро пожаловать, " + login + "\n" + "Вы вошли в систему как кассир",
+                                                         font=("Arial Bold", 15))
+        self.cashier_main_window_label_info.place(x=120, y=45)
+        self.cashier_main_window_label_info.pack()
+
+        self.cashier_timetable_button_submit = tk.Button(self.cashier_window_frame, text="Выйти из системы",
+                                                           width=40,
+                                                           height=2,
+                                                           fg="#A62A00",
+                                                           command=self.click_back_to_main)
+        self.cashier_timetable_button_submit.place(x=55, y=100)
+        self.cashier_timetable_button_submit.pack(padx=30, pady=20)
+
+
+
 
     # Основное окно пользователя
     def create_users_main_window(self, root_window):
@@ -141,15 +163,19 @@ class FrameHandler:
 
     def __init__(self, root_window, database):
         self.create_main_frame(root_window)
-        self.create_entry_frame(root_window)
+        login = self.create_entry_frame(root_window)
         self.create_registration_frame(root_window)
+
+        print(login)
+
         self.create_users_main_window(root_window)
-        self.create_machinist_main_window(root_window, self.registration_field_login.get())
+        self.create_machinist_main_window(root_window, login)
+        self.create_cashier_main_window(root_window, login)
 
         self.database = database
 
         self.current_frame_name = "MAIN_FRAME" # Создаём переменную для хранения названия текущего фрейма
-        self.frame_dictionary = {"MAIN_FRAME": self.main_window_frame, "ENTRY_FRAME": self.entry_window_frame, "REGISTRATION_FRAME": self.registration_window_frame, "USER_MAIN_FRAME": self.user_main_window, "MACHINIST_MAIN_FRAME": self.machinist_window_frame} # Создаём структуру данных для удобного обращения к фреймам по строковому имени
+        self.frame_dictionary = {"MAIN_FRAME": self.main_window_frame, "ENTRY_FRAME": self.entry_window_frame, "REGISTRATION_FRAME": self.registration_window_frame, "USER_MAIN_FRAME": self.user_main_window, "MACHINIST_MAIN_FRAME": self.machinist_window_frame, "CASHIER_MAIN_FRAME": self.cashier_window_frame} # Создаём структуру данных для удобного обращения к фреймам по строковому имени
 
     # Логика нажатия кнопок -------->
 
@@ -170,6 +196,9 @@ class FrameHandler:
     def click_registration_submit(self):
         login = self.registration_field_login.get()
         password = self.registration_field_password.get()
+        self.registration_field_login.delete(first=0, last=len(login))
+        self.registration_field_password.delete(first=0, last=len(password))
+
         code = utility.check_login_and_password_for_register(login, password)
         if code == 100:
             result = self.database.user_registration(login, password)
@@ -186,6 +215,8 @@ class FrameHandler:
         # Получаем из полей ввода данные
         login = self.entry_field_login.get()
         password = self.entry_field_password.get()
+        self.entry_field_login.delete(first=0, last=len(login))
+        self.entry_field_password.delete(first=0, last=len(password))
 
         # Просим базу данных чекнуть есть ли такая запись о пользователе.
         result = self.database.check_login(login, password)
@@ -197,8 +228,7 @@ class FrameHandler:
             self.switch_to_frame("USER_MAIN_FRAME")
             self.user_main_window_label_info.config(text="Добро пожаловать, " + login + "\n" + "Вы вошли в систему как пассажир")
         elif result == 103:
-            self.switch_to_frame("USER_MAIN_FRAME")
-            self.user_main_window_label_info.config(text="Добро пожаловать, " + login + "\n" + "Вы вошли в систему как кассир")
+            self.switch_to_frame("CASHIER_MAIN_FRAME")
         elif result == 104:
             self.switch_to_frame("MACHINIST_MAIN_FRAME")
         else:
