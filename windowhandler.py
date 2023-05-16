@@ -166,8 +166,6 @@ class FrameHandler:
         login = self.create_entry_frame(root_window)
         self.create_registration_frame(root_window)
 
-        print(login)
-
         self.create_users_main_window(root_window)
         self.create_machinist_main_window(root_window, login)
         self.create_cashier_main_window(root_window, login)
