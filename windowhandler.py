@@ -227,8 +227,10 @@ class FrameHandler:
             self.user_main_window_label_info.config(text="Добро пожаловать, " + login + "\n" + "Вы вошли в систему как пассажир")
         elif result == 103:
             self.switch_to_frame("CASHIER_MAIN_FRAME")
+            self.cashier_main_window_label_info.config(text="Добро пожаловать, " + login + "\n" + "Вы вошли в систему как кассир")
         elif result == 104:
             self.switch_to_frame("MACHINIST_MAIN_FRAME")
+            self.machinist_main_window_label_info.config(text="Добро пожаловать, " + login + "\n" + "Вы вошли в систему как машинист")
         else:
             messagebox.showerror("Ошибка!", "Такого пользователя не существует или пароль неверный")
 
