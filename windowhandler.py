@@ -112,14 +112,14 @@ class FrameHandler:
     def create_machinist_main_window(self, root_window, login):
         self.machinist_window_frame = tk.Frame(root_window)
 
-        self.machinist_main_window_label_info = tk.Label(self.machinist_window_frame, text="Добро пожаловать, " + login + "\n" + "Вы вошли в систему как машинист", font=("Arial Bold", 15))
+        self.machinist_main_window_label_info = tk.Label(self.machinist_window_frame, font=("Arial Bold", 15))
         self.machinist_main_window_label_info.place(x=120, y=45)
         self.machinist_main_window_label_info.pack()
 
         self.machinist_timetable_button_submit = tk.Button(self.machinist_window_frame, text="Выйти из системы", width=40,
                                                     height=2,
                                                     fg="#A62A00",
-                                                    command=self.click_back_to_main)
+                                                    command=self.click_back_to_main_from_account)
         self.machinist_timetable_button_submit.place(x=55, y=100)
         self.machinist_timetable_button_submit.pack(padx=30, pady=20)
 
@@ -127,9 +127,7 @@ class FrameHandler:
     def create_cashier_main_window(self, root_window, login):
         self.cashier_window_frame = tk.Frame(root_window)
 
-        self.cashier_main_window_label_info = tk.Label(self.cashier_window_frame,
-                                                         text="Добро пожаловать, " + login + "\n" + "Вы вошли в систему как кассир",
-                                                         font=("Arial Bold", 15))
+        self.cashier_main_window_label_info = tk.Label(self.cashier_window_frame, font=("Arial Bold", 15))
         self.cashier_main_window_label_info.place(x=120, y=45)
         self.cashier_main_window_label_info.pack()
 
@@ -137,7 +135,7 @@ class FrameHandler:
                                                            width=40,
                                                            height=2,
                                                            fg="#A62A00",
-                                                           command=self.click_back_to_main)
+                                                           command=self.click_back_to_main_from_account)
         self.cashier_timetable_button_submit.place(x=55, y=100)
         self.cashier_timetable_button_submit.pack(padx=30, pady=20)
 
@@ -152,6 +150,15 @@ class FrameHandler:
                                                 font=("Arial Bold", 16))
         self.user_main_window_label_info.place(x=120, y=45)
         self.user_main_window_label_info.pack()
+
+        self.user_timetable_button_submit = tk.Button(self.user_main_window, text="Выйти из системы",
+                                                         width=40,
+                                                         height=2,
+                                                         fg="#A62A00",
+                                                         command=self.click_back_to_main_from_account)
+        self.user_timetable_button_submit.place(x=55, y=100)
+        self.user_timetable_button_submit.pack(padx=30, pady=20)
+
 
 
     # Сменить фрейм по имени
@@ -184,24 +191,34 @@ class FrameHandler:
         self.switch_to_frame("ENTRY_FRAME")
 
     def click_back_to_main(self):
+            self.switch_to_frame("MAIN_FRAME")
+            self.registration_field_login.delete(first=0, last=len(self.registration_field_login.get()))
+            self.registration_field_password.delete(first=0, last=len(self.registration_field_password.get()))
+            self.entry_field_login.delete(first=0, last=len(self.entry_field_login.get()))
+            self.entry_field_password.delete(first=0, last=len(self.entry_field_password.get()))
+
+
+    def click_back_to_main_from_account(self):
         self.answer = messagebox.askyesno(
             title="Подтверждение",
             message="Вы уверены?")
         if self.answer:
             self.switch_to_frame("MAIN_FRAME")
+            self.entry_field_login.delete(first=0, last=len(self.entry_field_login.get()))
+            self.entry_field_password.delete(first=0, last=len(self.entry_field_password.get()))
 
 
     def click_registration_submit(self):
         login = self.registration_field_login.get()
         password = self.registration_field_password.get()
-        self.registration_field_login.delete(first=0, last=len(login))
-        self.registration_field_password.delete(first=0, last=len(password))
 
         code = utility.check_login_and_password_for_register(login, password)
         if code == 100:
             result = self.database.user_registration(login, password)
             if result == True:
                 messagebox.showinfo("Уведомление", "Вы успешно зарегистрировались")
+                self.registration_field_login.delete(first=0, last=len(login))
+                self.registration_field_password.delete(first=0, last=len(password))
             else:
                 messagebox.showerror("Предупреждение", "Такой логин уже существует")
         else:
@@ -213,8 +230,6 @@ class FrameHandler:
         # Получаем из полей ввода данные
         login = self.entry_field_login.get()
         password = self.entry_field_password.get()
-        self.entry_field_login.delete(first=0, last=len(login))
-        self.entry_field_password.delete(first=0, last=len(password))
 
         # Просим базу данных чекнуть есть ли такая запись о пользователе.
         result = self.database.check_login(login, password)
