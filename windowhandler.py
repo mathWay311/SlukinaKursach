@@ -50,7 +50,7 @@ class FrameHandler:
         self.entry_label_password.place(x=60, y=195)
         self.entry_label_password.pack()
 
-        self.entry_field_password = tk.Entry(self.entry_window_frame, width=30)
+        self.entry_field_password = tk.Entry(self.entry_window_frame, width=30, show="*")
         self.entry_field_password.place(x=150, y=200)
         self.entry_field_password.pack()
 
@@ -92,9 +92,18 @@ class FrameHandler:
         self.registration_label_password.place(x=60, y=195)
         self.registration_label_password.pack()
 
-        self.registration_field_password = ttk.Entry(self.registration_window_frame, width=30)
+        self.registration_field_password = ttk.Entry(self.registration_window_frame, width=30, show="*")
         self.registration_field_password.place(x=150, y=200)
         self.registration_field_password.pack()
+
+        self.registration_label_password_proof = tk.Label(self.registration_window_frame, text="Подтвердите пароль:",
+                                                    font=("Arial Bold", 15))
+        self.registration_label_password_proof.place(x=60, y=195)
+        self.registration_label_password_proof.pack()
+
+        self.registration_field_password_proof = ttk.Entry(self.registration_window_frame, width=30, show="*")
+        self.registration_field_password_proof.place(x=150, y=200)
+        self.registration_field_password_proof.pack()
 
         self.registration_button_submit = tk.Button(self.registration_window_frame, text="Зарегистрироваться", width=40, height=2,
                                                   fg="#A62A00",
@@ -194,6 +203,7 @@ class FrameHandler:
             self.switch_to_frame("MAIN_FRAME")
             self.registration_field_login.delete(first=0, last=len(self.registration_field_login.get()))
             self.registration_field_password.delete(first=0, last=len(self.registration_field_password.get()))
+            self.registration_field_password_proof.delete(first=0, last=len(self.registration_field_password_proof.get()))
             self.entry_field_login.delete(first=0, last=len(self.entry_field_login.get()))
             self.entry_field_password.delete(first=0, last=len(self.entry_field_password.get()))
 
@@ -211,14 +221,16 @@ class FrameHandler:
     def click_registration_submit(self):
         login = self.registration_field_login.get()
         password = self.registration_field_password.get()
+        password_proof = self.registration_field_password_proof.get()
 
-        code = utility.check_login_and_password_for_register(login, password)
+        code = utility.check_login_and_password_for_register(login, password, password_proof)
         if code == 100:
             result = self.database.user_registration(login, password)
             if result == True:
                 messagebox.showinfo("Уведомление", "Вы успешно зарегистрировались")
                 self.registration_field_login.delete(first=0, last=len(login))
                 self.registration_field_password.delete(first=0, last=len(password))
+                self.registration_field_password_proof.delete(first=0, last=len(password_proof))
             else:
                 messagebox.showerror("Предупреждение", "Такой логин уже существует")
         else:
