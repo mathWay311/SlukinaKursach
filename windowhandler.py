@@ -67,9 +67,6 @@ class FrameHandler:
         self.entry_button_back.place(x=55, y=100)
         self.entry_button_back.pack(padx=30, pady=20)
 
-        print(self.entry_field_login.get())
-        return self.entry_field_login.get()
-
         #self.entry_window_frame.pack()  Здесь ничего паковать не надо, потому  что при входе мы не видим этого фрейма.
 
     # Меню регистрации
@@ -118,7 +115,7 @@ class FrameHandler:
 
     # Основное окно машиниста
 
-    def create_machinist_main_window(self, root_window, login):
+    def create_machinist_main_window(self, root_window):
         self.machinist_window_frame = tk.Frame(root_window)
 
         self.machinist_main_window_label_info = tk.Label(self.machinist_window_frame, font=("Arial Bold", 15))
@@ -133,8 +130,31 @@ class FrameHandler:
         self.machinist_timetable_button_submit.pack(padx=30, pady=20)
 
 
-    def create_cashier_main_window(self, root_window, login):
-        self.cashier_window_frame = tk.Frame(root_window)
+    #Логика нажатия вкладок
+
+
+    def create_cashier_main_window(self, root_window):
+
+        self.notebook_frame = ttk.Notebook()
+        self.notebook_frame.pack(expand=True)
+
+        self.cashier_window_frame = tk.Frame(self.notebook_frame)
+
+        # Первая вкладка
+        self.buy_ticket_main_window = tk.Frame(self.notebook_frame)
+        self.buy_ticket_main_window.pack(expand=True)
+
+        self.buy_ticket_main_window_label_info = tk.Label(self.buy_ticket_main_window, text="Поздравляю!",
+                                                          font=("Arial Bold", 15))
+        self.buy_ticket_main_window_label_info.place(x=120, y=150)
+        self.buy_ticket_main_window_label_info.pack()
+
+        # Вторая вкладка
+        self.return_ticket_main_window = tk.Frame(self.notebook_frame)
+        self.return_ticket_main_window.pack(expand=True)
+
+        self.notebook_frame.add(self.buy_ticket_main_window, text="Купить билет")
+        self.notebook_frame.add(self.return_ticket_main_window, text="Вернуть билет")
 
         self.cashier_main_window_label_info = tk.Label(self.cashier_window_frame, font=("Arial Bold", 15))
         self.cashier_main_window_label_info.place(x=120, y=45)
@@ -179,17 +199,24 @@ class FrameHandler:
 
     def __init__(self, root_window, database):
         self.create_main_frame(root_window)
-        login = self.create_entry_frame(root_window)
+        self.create_entry_frame(root_window)
         self.create_registration_frame(root_window)
 
         self.create_users_main_window(root_window)
-        self.create_machinist_main_window(root_window, login)
-        self.create_cashier_main_window(root_window, login)
+        self.create_machinist_main_window(root_window)
+        # self.create_notebook_frame(root_window)
+        self.create_cashier_main_window(root_window)
 
         self.database = database
 
         self.current_frame_name = "MAIN_FRAME" # Создаём переменную для хранения названия текущего фрейма
-        self.frame_dictionary = {"MAIN_FRAME": self.main_window_frame, "ENTRY_FRAME": self.entry_window_frame, "REGISTRATION_FRAME": self.registration_window_frame, "USER_MAIN_FRAME": self.user_main_window, "MACHINIST_MAIN_FRAME": self.machinist_window_frame, "CASHIER_MAIN_FRAME": self.cashier_window_frame} # Создаём структуру данных для удобного обращения к фреймам по строковому имени
+        self.frame_dictionary = {"MAIN_FRAME": self.main_window_frame,
+                                 "ENTRY_FRAME": self.entry_window_frame,
+                                 "REGISTRATION_FRAME": self.registration_window_frame,
+                                 "USER_MAIN_FRAME": self.user_main_window,
+                                 "MACHINIST_MAIN_FRAME": self.machinist_window_frame,
+                                 "CASHIER_MAIN_FRAME": self.cashier_window_frame,
+                                 "BUY_TICKET_MAIN_FRAME": self.buy_ticket_main_window} # Создаём структуру данных для удобного обращения к фреймам по строковому имени
 
     # Логика нажатия кнопок -------->
 
