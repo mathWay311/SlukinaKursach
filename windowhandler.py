@@ -10,6 +10,7 @@ from frames.users_frame import UserFrame
 from frames.machinist_Frame import MachinistFrame
 from frames.cashier_frame import CashierFrame
 from frames.admin_frame import AdminFrame
+from frames.buy_ticket_frame import BuyTicket
 
 from tkinter import messagebox
 
@@ -25,7 +26,8 @@ class FrameHandler:
             "UserFrame": "Пользователь",
             "MachinistFrame": "Машинист",
             "CashierFrame": "Кассир",
-            "AdminFrame": "Администратор"
+            "AdminFrame": "Администратор",
+            "BuyTicket": "Покупка билета"
         }
 
         self.showed_frame = AuthFrame(root_window, self)
@@ -46,13 +48,19 @@ class FrameHandler:
 
 #   < ---------------------------КОМАНДЫ----------------------------->
 
-
-
-    def click_back_to_main_from_account(self):
+    def message_to_confirm_transition(self):
         self.answer = messagebox.askyesno(
             title="Подтверждение",
             message="Вы уверены?")
-        if self.answer:
+        return self.answer
+
+    def click_back_to_main_menu_admin(self):
+        if self.message_to_confirm_transition():
+            self.switch_to_frame("AdminFrame")
+
+
+    def click_back_to_main_from_account(self):
+        if self.message_to_confirm_transition():
             self.switch_to_frame("AuthFrame")
 
 

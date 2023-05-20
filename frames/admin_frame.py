@@ -11,6 +11,8 @@ class AdminFrame(BaseFrame):
         self.admin_main_window_label_info.place(x=120, y=45)
         self.admin_main_window_label_info.pack()
 
+
+
         self.admin_timetable_button_submit = tk.CTkButton(self, text="Выйти из системы",
                                                             width=40,
                                                             height=2,
