@@ -1,6 +1,9 @@
 import customtkinter as tk
 import database as db
+import routebase as rb
 import utility
+
+
 
 # <--Фреймы-->
 from frames.authorization_frame import AuthFrame
@@ -15,10 +18,11 @@ from frames.buy_ticket_frame import BuyTicket
 from tkinter import messagebox
 
 class FrameHandler:
-    def __init__(self, root_window, database):
+    def __init__(self, root_window, database, routebase):
         self.root = root_window
         self.showed_frame = ""
         self.database = database
+        self.routebase = routebase
         self.title_dict = {
             "AuthFrame": "Железнодорожный вокзал",
             "EntryFrame": "Войти",
@@ -54,9 +58,9 @@ class FrameHandler:
             message="Вы уверены?")
         return self.answer
 
-    def click_back_to_main_menu_admin(self):
+    def click_back_to_main_menu_cashier(self):
         if self.message_to_confirm_transition():
-            self.switch_to_frame("AdminFrame")
+            self.switch_to_frame("CashierFrame")
 
 
     def click_back_to_main_from_account(self):
@@ -109,6 +113,19 @@ class FrameHandler:
             messagebox.showerror("Ошибка!", "Такого пользователя не существует или пароль неверный")
 
 
+    def click_buy_ticket_search(self):
+        beg_city = self.showed_frame.buy_ticket_main_window_label_city_begin.get()
+        end_city = self.showed_frame.buy_ticket_main_window_label_city_end.get()
+        result = self.routebase.check_cities_when_buying(beg_city, end_city)
+        while result:
+            new_listbox = result
+            self.showed_frame.list_to_route_buy_ticket.insert(0, new_listbox)
+
+
+
+
+
+
 class MainWindow():
     def __init__ (self):
         self.window = tk.CTk()
@@ -117,7 +134,8 @@ class MainWindow():
         self.window.resizable(True, True)
 
         self.database = db.DataBase("users.db")
+        self.routebase = rb.RouteBase("route.db")
 
-        self.frame_handler = FrameHandler(self.window, self.database) # Создаём диспетчера фреймов описанного выше
+        self.frame_handler = FrameHandler(self.window, self.database, self.routebase) # Создаём диспетчера фреймов описанного выше
         self.window.mainloop()
 
