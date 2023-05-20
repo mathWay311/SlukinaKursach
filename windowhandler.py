@@ -9,6 +9,7 @@ from frames.registration_frame import RegistrationFrame
 from frames.users_frame import UserFrame
 from frames.machinist_Frame import MachinistFrame
 from frames.cashier_frame import CashierFrame
+from frames.admin_frame import AdminFrame
 
 from tkinter import messagebox
 
@@ -23,7 +24,8 @@ class FrameHandler:
             "RegistrationFrame": "Регистрация",
             "UserFrame": "Пользователь",
             "MachinistFrame": "Машинист",
-            "CashierFrame": "Кассир"
+            "CashierFrame": "Кассир",
+            "AdminFrame": "Администратор"
         }
 
         self.showed_frame = AuthFrame(root_window, self)
@@ -80,8 +82,8 @@ class FrameHandler:
         result = self.database.check_login(login, password)
 
         if result == 101:
-            self.switch_to_frame("UserFrame")
-            self.showed_frame.user_main_window_label_info.configure(
+            self.switch_to_frame("AdminFrame")
+            self.showed_frame.admin_main_window_label_info.configure(
                 text="Добро пожаловать, " + login + "\n" + "Вы вошли в систему как администратор")
         elif result == 102:
             self.switch_to_frame("UserFrame")

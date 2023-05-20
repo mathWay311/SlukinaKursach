@@ -5,7 +5,6 @@ from base_frame import BaseFrame
 class CashierFrame(BaseFrame):
     def create_widgets(self, controller):
 
-
         self.cashier_main_window_label_info = tk.CTkLabel(self)
         self.cashier_main_window_label_info.place(x=120, y=45)
         self.cashier_main_window_label_info.pack()
