@@ -48,14 +48,14 @@ class DataBase:
         file.close()
         return success
 
-    def user_registration(self, login, password):
+    def registration(self, login, password, role):
         is_account_present = self.check_account_presence(login)
 
         if is_account_present:
             return False
         else:
             file = open(self.users_file_name, "a")
-            file.write(login + ";" + password + ";user;" + "\n")
+            file.write(login + ";" + password + ";" + role + ";" + "\n")
             file.close()
             return True
 
