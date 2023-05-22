@@ -5,7 +5,6 @@ import buyersbase as bb
 import utility
 
 
-
 # <--Фреймы-->
 from frames.authorization_frame import AuthFrame
 from frames.entry_frame import EntryFrame
@@ -192,10 +191,10 @@ class MainWindow():
         self.window.geometry("600x500")
         self.window.resizable(True, True)
 
-        self.database = db.DataBase("users.db")
-        self.routebase = rb.RouteBase("route.db")
-        self.buyersbase = bb.BuyersBase("buyers.db")
+        self.database = db.DataBase("BaseData/users.db")
+        self.routebase = rb.RouteBase("BaseData/route.db")
+        self.buyersbase = bb.BuyersBase("BaseData/buyers.db")
 
-        self.frame_handler = FrameHandler(self.window, self.database, self.routebase) # Создаём диспетчера фреймов описанного выше
+        self.frame_handler = FrameHandler(self.window, self.database, self.routebase, self.buyersbase) # Создаём диспетчера фреймов описанного выше
         self.window.mainloop()
 

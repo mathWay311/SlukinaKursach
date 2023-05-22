@@ -1,11 +1,11 @@
 import customtkinter as tk
 from base_frame import BaseFrame
+from PIL import Image
 
 
 
 class AdminFrame(BaseFrame):
     def create_widgets(self, controller):
-
 
         self.admin_main_window_label_info = tk.CTkLabel(self, font=("Arial Bold", 20))
         self.admin_main_window_label_info.pack(pady=10)
