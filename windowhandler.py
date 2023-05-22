@@ -2,6 +2,7 @@ import customtkinter as tk
 import database as db
 import routebase as rb
 import buyersbase as bb
+import use_BD as bd
 import utility
 
 
@@ -15,11 +16,13 @@ from frames.cashier_frame import CashierFrame
 from frames.admin_frame import AdminFrame
 from frames.buy_ticket_frame import BuyTicket
 from frames.return_ticket_frame import ReturnTicket
+from frames.add_new_route_frame import AddNewRoute
 
 from tkinter import messagebox
 
 class FrameHandler:
     def __init__(self, root_window, database, routebase, buyersbase):
+        self.bd = bd.DB()
         root_window.config(bg='#FFBDA0')
        # tk.set_default_color_theme("blue")
         self.root = root_window
@@ -36,7 +39,8 @@ class FrameHandler:
             "CashierFrame": "Кассир",
             "AdminFrame": "Администратор",
             "BuyTicket": "Покупка билета",
-            "ReturnTicket": "Возврат билета кассиром"
+            "ReturnTicket": "Возврат билета кассиром",
+            "AddNewRoute": "Добавление нового рейса"
         }
 
         self.showed_frame = AuthFrame(root_window, self)
@@ -63,6 +67,14 @@ class FrameHandler:
             message="Вы уверены?")
         return self.answer
 
+    def delete_by_id(self, table, id):
+        result = messagebox.askokcancel("Вы уверены?", "Удалённые данные будут потеряны безвозвратно")
+        if result:
+            self.bd.delete_by_id(table, id)
+            #self.refresh()
+
+
+
     def click_back_to_main_menu_cashier(self):
         if self.message_to_confirm_transition():
             self.switch_to_frame("CashierFrame")
@@ -75,6 +87,15 @@ class FrameHandler:
     def click_back_to_main_from_account(self):
         if self.message_to_confirm_transition():
             self.switch_to_frame("AuthFrame")
+
+    def add_new_route(self, dir):
+        _data = self.showed_frame.add_route_main_window_entry_data.get()
+        _city_beg = self.showed_frame.add_route_main_window_entry_city_beg.get()
+        _city_end = self.showed_frame.add_route_main_window_entry_city_end.get()
+        _name_train = self.showed_frame.add_route_main_window_entry_name_train.get()
+        self.bd.add_new_route("route", _data + ";" + _city_beg + ";" + _city_end + ";" + _name_train)
+
+
 
     def click_registration_submit(self):
         self.login = self.showed_frame.registration_field_login.get()
@@ -181,7 +202,20 @@ class FrameHandler:
         patronymic = self.showed_frame.return_ticket_main_window_label_patronymic.get()
 
 
+   # def populate_panel_with_content(self, content_name):
+      #  if content_name == "route":
+        #    self.current_content = "route"
+         #   lines = self.bd.get_all_from("route")
 
+          #  self.showed_frame.content_panel.destroy()
+           # self.showed_frame.content_panel = ScrollableFrame(self.showed_frame)
+           # scrollbar = tk.CTkScrollbar
+
+           # for i in range(len(lines)):
+            #    line = lines[i].split(";")
+            #    dir = Direction(line, self, self.showed_frame.content_panel.scrollable_frame, line[0])
+
+           # self.showed_frame.content_panel.pack(side = tk.TOP,expand = 1, fill= tk.BOTH)
 
 
 class MainWindow():
