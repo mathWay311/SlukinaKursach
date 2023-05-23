@@ -5,7 +5,7 @@ from base_frame import BaseFrame
 class UserFrame(BaseFrame):
     def create_widgets(self, controller):
 
-        self.user_main_window_label_info = tk.CTkLabel(self, text="", font=("Arial Bold", 20))
+        self.user_main_window_label_info = tk.CTkLabel(self, font=("Arial Bold", 20))
         self.user_main_window_label_info.pack(pady=10)
 
         self.user_main_window_button_buy_ticket = tk.CTkButton(self, text="Купить билет", fg_color="#FF7F50",
@@ -27,5 +27,5 @@ class UserFrame(BaseFrame):
                                                       height=35,
                                                       font=("Arial Bold", 15),
                                                       command= lambda :controller.click_back_to_main_from_account())
-        self.user_timetable_button_exit_submit.pack(padx=30, pady=20)
+        self.user_timetable_button_exit_submit.pack(padx=30, pady=30)
         self.pack()

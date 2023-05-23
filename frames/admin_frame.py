@@ -16,7 +16,7 @@ class AdminFrame(BaseFrame):
                                                             fg_color="#FF7F50",
                                                             font=("Arial Bold", 15),
                                                             command=lambda: controller.click_registration_for_cashier())
-        self.admin_main_menu_label_registration_cashier.pack(padx=30, pady=20)
+        self.admin_main_menu_label_registration_cashier.pack(padx=120, pady=20)
 
         self.admin_main_menu_label_registration_machinist = tk.CTkButton(self, text="Регистрация нового машиниста",
                                                                        fg_color="#FF7F50",
@@ -24,7 +24,7 @@ class AdminFrame(BaseFrame):
                                                                        height=35,
                                                                        font=("Arial Bold", 15),
                                                                        command=lambda: controller.click_registration_for_machinist())
-        self.admin_main_menu_label_registration_machinist.pack(padx=30, pady=20)
+        self.admin_main_menu_label_registration_machinist.pack(padx=120, pady=20)
 
         self.admin_main_menu_label_registration_add_new_route = tk.CTkButton(self, text="Добавить новый рейс",
                                                                          width=230,
@@ -32,14 +32,14 @@ class AdminFrame(BaseFrame):
                                                                          fg_color="#FF7F50",
                                                                          font=("Arial Bold", 15),
                                                                          command=lambda: controller.switch_to_frame("AddNewRoute"))
-        self.admin_main_menu_label_registration_add_new_route.pack(padx=30, pady=20)
+        self.admin_main_menu_label_registration_add_new_route.pack(padx=120, pady=20)
 
         self.admin_main_menu_label_add_new_train = tk.CTkButton(self, text="Добавить новый поезд",
                                                                          fg_color="#FF7F50",
                                                                          width=230,
                                                                          height=35,
                                                                          font=("Arial Bold", 15))
-        self.admin_main_menu_label_add_new_train.pack(padx=30, pady=20)
+        self.admin_main_menu_label_add_new_train.pack(padx=120, pady=20)
 
 
         self.admin_timetable_button_exit_submit = tk.CTkButton(self, text="Выйти из системы",

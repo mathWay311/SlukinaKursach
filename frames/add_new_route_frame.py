@@ -42,7 +42,7 @@ class AddNewRoute(BaseFrame):
         self.add_route_button_exit_submit = tk.CTkButton(self, text="В главное меню",
                                                                  fg_color="#FF6347",
                                                                  font=("Arial Bold", 15),
-                                                                 command=lambda: controller.switch_to_frame("AdminFrame"))
+                                                                 command=lambda: controller.click_back_to_main_menu_admin())
 
         self.add_route_button_exit_submit.pack(padx=10, pady=10)
 

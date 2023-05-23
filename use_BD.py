@@ -51,7 +51,10 @@ class Table:
         file = open(self.path, "a")
         write_string = str(self.id_counter + 1) + ";" + record + "\n"
         print(write_string)
-        file.write(write_string)
+        if file.write(write_string):
+            return True
+        else:
+            return False
 
     def delete_by_id(self, id):
         lines = self.get_all()
@@ -85,7 +88,7 @@ class DB:
         self.tables[table_name].delete_by_id(id)
 
     def add_new_route(self, table_name, record):
-        self.tables[table_name].add_record(record)
-        messagebox.showinfo("Уведомление", "Успешно")
+        result = self.tables[table_name].add_record(record)
+        return result
 
 

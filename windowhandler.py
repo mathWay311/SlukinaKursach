@@ -73,16 +73,30 @@ class FrameHandler:
             self.bd.delete_by_id(table, id)
             #self.refresh()
 
-
+# <-- Клик "В главное меню" для каждой роли -->
 
     def click_back_to_main_menu_cashier(self):
-        if self.message_to_confirm_transition():
-            self.switch_to_frame("CashierFrame")
+        self.switch_to_frame("CashierFrame")
+        self.showed_frame.cashier_main_window_label_info.configure(
+            text="Добро пожаловать, " + self.login_entry + "\n" + "Вы вошли в систему как кассир")
 
     def click_back_to_main_menu_user(self):
-        if self.message_to_confirm_transition():
-            self.switch_to_frame("UserFrame")
+        self.switch_to_frame("UserFrame")
+        self.showed_frame.user_main_window_label_info.configure(
+            text="Добро пожаловать, " + self.login_entry + "\n" + "Вы вошли в систему как пассажир")
 
+    def click_back_to_main_menu_admin(self):
+        self.switch_to_frame("AdminFrame")
+        self.showed_frame.admin_main_window_label_info.configure(
+            text="Добро пожаловать, " + self.login_entry + "\n" + "Вы вошли в систему как администратор")
+
+
+    def click_back_to_main_menu_machinist(self):
+        self.switch_to_frame("MachinistFrame")
+        self.showed_frame.machinist_main_window_label_info.configure(
+            text="Добро пожаловать, " + self.login_entry + "\n" + "Вы вошли в систему как машинист")
+
+# <------------>
 
     def click_back_to_main_from_account(self):
         if self.message_to_confirm_transition():
@@ -93,7 +107,18 @@ class FrameHandler:
         _city_beg = self.showed_frame.add_route_main_window_entry_city_beg.get()
         _city_end = self.showed_frame.add_route_main_window_entry_city_end.get()
         _name_train = self.showed_frame.add_route_main_window_entry_name_train.get()
-        self.bd.add_new_route("route", _data + ";" + _city_beg + ";" + _city_end + ";" + _name_train)
+
+        code = utility.check_route_for_register(_city_beg, _city_end)
+
+        if code == 100:
+            result = self.bd.add_new_route("route", _data + ";" + _city_beg + ";" + _city_end + ";" + _name_train)
+            if result == True:
+                messagebox.showinfo("Уведомление", "Успешно")
+            else:
+                messagebox.showerror("Ошибка", "Ошибка записи")
+        else:
+            messagebox.showerror("Ошибка", utility.errorcodes_descriptions[code])
+
 
 
 
@@ -161,31 +186,22 @@ class FrameHandler:
     # По нажатию на кнопку Войти
     def click_entry_submit(self):
         # Получаем из полей ввода данные
-        login = self.showed_frame.entry_field_login.get()
+        self.login_entry = self.showed_frame.entry_field_login.get()
         password = self.showed_frame.entry_field_password.get()
 
         # Просим базу данных чекнуть есть ли такая запись о пользователе.
-        result = self.database.check_login(login, password)
+        result = self.database.check_login(self.login_entry, password)
 
         if result == 101:
-            self.switch_to_frame("AdminFrame")
-            self.showed_frame.admin_main_window_label_info.configure(
-                text="Добро пожаловать, " + login + "\n" + "Вы вошли в систему как администратор")
+            self.click_back_to_main_menu_admin()
         elif result == 102:
-            self.switch_to_frame("UserFrame")
-            self.showed_frame.user_main_window_label_info.configure(
-                text="Добро пожаловать, " + login + "\n" + "Вы вошли в систему как пассажир")
+            self.click_back_to_main_menu_user()
         elif result == 103:
-            self.switch_to_frame("CashierFrame")
-            self.showed_frame.cashier_main_window_label_info.configure(
-                text="Добро пожаловать, " + login + "\n" + "Вы вошли в систему как кассир")
+            self.click_back_to_main_menu_cashier()
         elif result == 104:
-            self.switch_to_frame("MachinistFrame")
-            self.showed_frame.machinist_main_window_label_info.configure(
-                text="Добро пожаловать, " + login + "\n" + "Вы вошли в систему как машинист")
+            self.click_back_to_main_menu_machinist()
         else:
             messagebox.showerror("Ошибка!", "Такого пользователя не существует или пароль неверный")
-
 
     def click_buy_ticket_search(self):
         beg_city = self.showed_frame.buy_ticket_main_window_label_city_begin.get()
