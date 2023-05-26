@@ -9,7 +9,7 @@ errorcodes_descriptions = { 400 : "Пароли не совпадают",
                             405 : "Город отправления и прибытия не могут совпадать"
                             }
 
-MINIMUM_LOGIN_LENGTH = 3
+MINIMUM_LOGIN_LENGTH = 4
 MINIMUM_PASSWORD_LENGTH = 6
 
 MAXIMUM_LOGIN_LENGTH = 15

@@ -4,6 +4,8 @@ import routebase as rb
 import buyersbase as bb
 import use_BD as bd
 import utility
+from models import *
+
 
 
 # <--Фреймы-->
@@ -17,6 +19,7 @@ from frames.admin_frame import AdminFrame
 from frames.buy_ticket_frame import BuyTicket
 from frames.return_ticket_frame import ReturnTicket
 from frames.add_new_route_frame import AddNewRoute
+from frames.scrollable_frame import ScrollableFrame
 
 from tkinter import messagebox
 
@@ -119,6 +122,32 @@ class FrameHandler:
         else:
             messagebox.showerror("Ошибка", utility.errorcodes_descriptions[code])
 
+    def get_available_machinist(self) -> list[MachinistModel]:
+        models = self.bd.get_all_from("users")
+        output = []
+        for model in models:
+            output.append(model)
+        return output
+
+    def populate_panel_with_content(self, content_name):
+        """
+        Заполнить поле для контента обьектами из базы
+
+        Args:
+            content_name:
+                Название контента для заполнения в формате "table", то есть то же имя, что и у файла таблицы БД
+        """
+        self.current_content = content_name
+        models = self.bd.get_all_from(content_name)
+        self.showed_frame.content_panel.destroy()
+        self.showed_frame.content_panel = ScrollableFrame(self.showed_frame)
+        scrollbar = tk.CTkScrollbar
+
+        for model in models:
+            if content_name == "machinist":
+                dir = MachinistModel(model, self, self.showed_frame.content_panel.scrollable_frame)
+
+        self.showed_frame.content_panel.pack(side = tk.TOP,expand = 1, fill= tk.BOTH)
 
 
 
