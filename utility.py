@@ -19,13 +19,13 @@ MAXIMUM_PASSWORD_LENGTH = 15
 def check_login_and_password_for_register(login, password, password_proof):
     if password != password_proof:
         return 400
-    if len(login) < MINIMUM_LOGIN_LENGTH:
+    if len(login.strip()) < MINIMUM_LOGIN_LENGTH:
         return 401
-    if len(password) < MINIMUM_PASSWORD_LENGTH:
+    if len(password.strip()) < MINIMUM_PASSWORD_LENGTH:
         return 402
-    if len(login) > MAXIMUM_LOGIN_LENGTH:
+    if len(login.strip()) > MAXIMUM_LOGIN_LENGTH:
         return 403
-    if len(password) > MAXIMUM_PASSWORD_LENGTH:
+    if len(password.strip()) > MAXIMUM_PASSWORD_LENGTH:
         return 404
     return 100
 
