@@ -1,6 +1,8 @@
 # Коды ошибок
 # 100 - Успех
 
+from tkinter import messagebox
+
 errorcodes_descriptions = { 400 : "Пароли не совпадают",
                             401 : "Слишком короткий логин",
                             402 : "Слишком короткий пароль",
@@ -40,3 +42,16 @@ def check_route_for_register(beg_city, end_city):
     if beg_city == end_city:
         return 405
     return 100
+
+def check_train(name: str) -> bool:
+    """
+    Проверяет при создании поезда правильность введённых данных
+
+    :param name: Название поезда
+    :return: Результат проверки
+    """
+    if len(name.strip()) == 0:
+        messagebox.showerror("Ошибка", "Пустое имя поезда")
+        return False
+    else:
+        return True

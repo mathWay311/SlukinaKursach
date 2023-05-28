@@ -41,7 +41,7 @@ class TrainModel(Model):
 
         :return: Строка
         """
-        return self.name + ";" + str(self.isOccupied)
+        return self.name + ";" + str(self.isOccupied) + ";"
 
 
 class UserModel(Model):
@@ -60,4 +60,16 @@ class WagonModel(Model):
         self.number= line[2]
         self.seats_string = line[3]
         self.trainID = int(line[4])
+
+    def db_add_string(self) -> str:
+        """
+        Возвращает строку, которую можно поместить в db.add_record()
+
+        :return: Строка
+        """
+        if self.type == "Купе":
+            self.seats_string = "0" * 10
+        if self.type == "Плацкарт":
+            self.seats_string = "0" * 20
+        return self.type + ";" + self.number + ";" + self.seats_string + ";" + str(self.trainID) + ";"
 

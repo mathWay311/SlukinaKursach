@@ -15,51 +15,38 @@ class AddNewTrain(BaseFrame):
         self.train_name = tk.CTkEntry(self, width=150)
         self.train_name.pack(pady=5)
 
-        self.add_route_main_window_label_city_end = tk.CTkLabel(self, text="Город прибытия", font=("Arial Bold", 15))
-        self.add_route_main_window_label_city_end.pack()
+        self.coupe_wagon_label = tk.CTkLabel(self, text="Количество вагонов купе: 4", font=("Arial Bold", 15))
+        self.coupe_wagon_label.pack()
 
-        self.add_route_main_window_entry_city_end = tk.CTkEntry(self, width=150)
-        self.add_route_main_window_entry_city_end.pack(pady=5)
+        self.coupe_wagon = tk.CTkSlider(self, from_=3, to=5, command=self.slider_event_coupe)
+        self.coupe_wagon.configure(number_of_steps=2)
+        self.coupe_wagon.pack(pady=5)
 
-        self.add_route_main_window_label_name_train = tk.CTkLabel(self, text="Выбрать поезд",
-                                                                      font=("Arial Bold", 15))
-        self.add_route_main_window_label_name_train.pack()
+        self.placcart_wagon_label = tk.CTkLabel(self, text="Количество вагонов плацкарт: 6", font=("Arial Bold", 15))
+        self.placcart_wagon_label.pack()
 
-        self.add_route_main_window_entry_name_train = tk.CTkComboBox(self, width=150, state="readonly")
-        self.add_route_main_window_entry_name_train.pack(padx=10, pady=5)
+        self.placcart_wagon = tk.CTkSlider(self, from_=5, to=7, command=self.slider_event_placcart)
+        self.placcart_wagon.configure(number_of_steps=2)
+        self.placcart_wagon.pack(pady=5)
 
-        self.add_route_main_window_label_name_machinist = tk.CTkLabel(self, text="Назначить машиниста",
-                                                                  font=("Arial Bold", 15))
-        self.add_route_main_window_label_name_machinist.pack(padx=10, pady=5)
 
-        self.add_route_main_window_entry_name_machinist = tk.CTkComboBox(self, width=150, state="readonly")
-        self.add_route_main_window_entry_name_machinist.pack(padx=10, pady=5)
-
-        """
-        available_machinists = controller.get_available_machinist()
-        list_directions = []
-        for dir in available_machinists:
-            list_directions.append(dir.name + " " + dir.password + " " + dir.role)
-
-        self.add_route_main_window_label_name_machinist.configure(values=list_directions)
-        if len(list_directions):
-            self.add_route_main_window_label_name_machinist.set(list_directions[0])
-        else:
-            self.add_route_main_window_label_name_machinist.set("")
-        self.add_route_main_window_label_name_machinist.pack()
-        """
-
-        self.add_route_main_window_button_submit_search = tk.CTkButton(self, text="Добавить рейс",
+        self.add_train_button = tk.CTkButton(self, text="Добавить поезд",
                                                                            fg_color="#FF7F50",
                                                                            font=("Arial Bold", 15),
                                                                        command=lambda: controller.add_new_train())
-        self.add_route_main_window_button_submit_search.pack(padx=10, pady=10)
+        self.add_train_button.pack(padx=10, pady=10)
 
-        self.add_route_button_exit_submit = tk.CTkButton(self, text="В главное меню",
+        self.exit_submit = tk.CTkButton(self, text="В главное меню",
                                                                  fg_color="#FF6347",
                                                                  font=("Arial Bold", 15),
                                                                  command=lambda: controller.click_back_to_main_menu_admin())
 
-        self.add_route_button_exit_submit.pack(padx=10, pady=10)
+        self.exit_submit.pack(padx=10, pady=10)
 
         self.pack()
+
+    def slider_event_coupe(self, value):
+        self.coupe_wagon_label.configure(text = "Количество вагонов купе: " + str(round(value)))
+
+    def slider_event_placcart(self, value):
+        self.placcart_wagon_label.configure(text = "Количество вагонов плацкарт: " + str(round(value)))

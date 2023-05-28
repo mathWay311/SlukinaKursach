@@ -127,7 +127,7 @@ class FrameHandler:
         code = utility.check_route_for_register(_city_beg, _city_end)
 
         if code == 100:
-            result = self.bd.add_new_route("route", _data + ";" + _city_beg + ";" + _city_end + ";" + _name_train)
+            result = self.bd.add_new_record("route", _data + ";" + _city_beg + ";" + _city_end + ";" + _name_train)
             if result == True:
                 messagebox.showinfo("Уведомление", "Успешно")
             else:
@@ -136,21 +136,29 @@ class FrameHandler:
             messagebox.showerror("Ошибка", utility.errorcodes_descriptions[code])
 
     def add_new_train(self):
-        _data = self.showed_frame.add_route_main_window_entry_data.get()
-        _city_beg = self.showed_frame.add_route_main_window_entry_city_beg.get()
-        _city_end = self.showed_frame.add_route_main_window_entry_city_end.get()
-        _name_train = self.showed_frame.add_route_main_window_entry_name_train.get()
+        _name = self.showed_frame.train_name.get()
+        _num_of_wagons_coupe = self.showed_frame.coupe_wagon.get()
+        _num_of_wagons_placcart = self.showed_frame.placcart_wagon.get()
 
-        code = utility.check_train()
+        train = TrainModel([0, _name, 0])
 
-        if code == 100:
-            result = self.bd.add_new_route("route", _data + ";" + _city_beg + ";" + _city_end + ";" + _name_train)
-            if result == True:
-                messagebox.showinfo("Уведомление", "Успешно")
-            else:
-                messagebox.showerror("Ошибка", "Ошибка записи")
-        else:
-            messagebox.showerror("Ошибка", utility.errorcodes_descriptions[code])
+        code = utility.check_train(_name)
+
+        if code:
+            train_id = self.bd.add_new_record("train", train.db_add_string())
+            messagebox.showinfo("Уведомление", "Вы добавили поезд " + _name)
+
+        num_coupe_last = 0
+        for i in range(int(_num_of_wagons_coupe)):
+            coupe_model = WagonModel([0, "Купе", str(i), "", str(train_id)])
+            self.bd.add_new_record("wagon", coupe_model.db_add_string())
+            num_coupe_last = i
+        num_coupe_last += 1
+        for i in range(num_coupe_last, num_coupe_last + int(_num_of_wagons_placcart)):
+            placcart_model = WagonModel([0, "Плацкарт", str(i), "", str(train_id)])
+            self.bd.add_new_record("wagon", placcart_model.db_add_string())
+
+
 
 
     def populate_panel_with_content(self, content_name):
@@ -202,7 +210,7 @@ class FrameHandler:
             result = self.database.registration(login_, password_, "cashier")
             if result == True:
                 messagebox.showinfo("Уведомление", "Кассир зарегистрирован")
-                self.switch_to_frame("AdminFrame")
+                self.click_back_to_main_menu_admin()
             else:
                 messagebox.showerror("Предупреждение", "Такое имя(логин) уже зарегистрировано")
         else:
@@ -218,7 +226,7 @@ class FrameHandler:
             result = self.database.registration(login_, password_, "machinist")
             if result == True:
                 messagebox.showinfo("Уведомление", "Машинист зарегистрирован")
-                self.switch_to_frame("AdminFrame")
+                self.click_back_to_main_menu_admin()
             else:
                 messagebox.showerror("Предупреждение", "Такое имя(логин) уже зарегистрировано")
         else:

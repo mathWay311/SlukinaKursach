@@ -195,7 +195,7 @@ train_table.column_config = ["ID", "Name"]
 
 class DB:
     def __init__(self):
-        self.tables = {"users": users_table, "route": route_table}
+        self.tables = {"users": users_table, "route": route_table, "train": train_table, "wagon": wagon_table}
 
     def get_all_from(self, table_name):
         return self.tables[table_name].get_all()
@@ -203,7 +203,7 @@ class DB:
     def delete_by_id(self, table_name, id):
         self.tables[table_name].delete_by_id(id)
 
-    def add_new_route(self, table_name, record):
+    def add_new_record(self, table_name, record):
         result = self.tables[table_name].add_record(record)
         return result
 
