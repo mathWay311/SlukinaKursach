@@ -26,7 +26,7 @@ class AdminFrame(BaseFrame):
                                                                        command=lambda: controller.click_registration_for_machinist())
         self.admin_main_menu_label_registration_machinist.pack(padx=120, pady=20)
 
-        self.admin_main_menu_label_registration_add_new_route = tk.CTkButton(self, text="Добавить новый рейс",
+        self.admin_main_menu_label_registration_add_new_route = tk.CTkButton(self, text="Рейсы",
                                                                          width=230,
                                                                          height=35,
                                                                          fg_color="#FF7F50",
@@ -34,7 +34,7 @@ class AdminFrame(BaseFrame):
                                                                          command=lambda: controller.switch_to_frame("AddNewRoute"))
         self.admin_main_menu_label_registration_add_new_route.pack(padx=120, pady=20)
 
-        self.admin_main_menu_label_add_new_train = tk.CTkButton(self, text="Добавить новый поезд",
+        self.admin_main_menu_label_add_new_train = tk.CTkButton(self, text="Поезда",
                                                                          fg_color="#FF7F50",
                                                                          width=230,
                                                                          height=35,
