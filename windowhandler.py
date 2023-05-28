@@ -9,16 +9,26 @@ from models import *
 
 
 # <--Фреймы-->
+
+
+# <--РОЛИ-->
+from frames.machinist_frame import *
+from frames.cashier_frame import *
+from frames.admin_frame import AdminFrame
+from frames.users_frame import UserFrame
+# <--РОЛИ-->
+
 from frames.authorization_frame import AuthFrame
 from frames.entry_frame import EntryFrame
 from frames.registration_frame import RegistrationFrame
-from frames.users_frame import UserFrame
-from frames.machinist_frame import MachinistFrame
-from frames.cashier_frame import CashierFrame
-from frames.admin_frame import AdminFrame
+
+
 from frames.buy_ticket_frame import BuyTicket
 from frames.return_ticket_frame import ReturnTicket
+
 from frames.add_new_route_frame import AddNewRoute
+from frames.add_new_train_frame import AddNewTrain
+
 from frames.scrollable_frame import ScrollableFrame
 
 from tkinter import messagebox
@@ -39,11 +49,14 @@ class FrameHandler:
             "RegistrationFrame": "Регистрация",
             "UserFrame": "Пользователь",
             "MachinistFrame": "Машинист",
+            "MachinistRegistrationFrame": "Регистрация машиниста",
+            "CashierRegistrationFrame": "Регистрация машиниста",
             "CashierFrame": "Кассир",
             "AdminFrame": "Администратор",
             "BuyTicket": "Покупка билета",
             "ReturnTicket": "Возврат билета кассиром",
-            "AddNewRoute": "Добавление нового рейса"
+            "AddNewRoute": "Добавление нового рейса",
+            "AddNewTrain": "Добавление нового поезда"
         }
 
         self.showed_frame = AuthFrame(root_window, self)
@@ -105,7 +118,7 @@ class FrameHandler:
         if self.message_to_confirm_transition():
             self.switch_to_frame("AuthFrame")
 
-    def add_new_route(self, dir):
+    def add_new_route(self):
         _data = self.showed_frame.add_route_main_window_entry_data.get()
         _city_beg = self.showed_frame.add_route_main_window_entry_city_beg.get()
         _city_end = self.showed_frame.add_route_main_window_entry_city_end.get()
@@ -122,12 +135,8 @@ class FrameHandler:
         else:
             messagebox.showerror("Ошибка", utility.errorcodes_descriptions[code])
 
-    def get_available_machinist(self) -> list[MachinistModel]:
-        models = self.bd.get_all_from("users")
-        output = []
-        for model in models:
-            output.append(model)
-        return output
+    def add_new_train(self):
+
 
     def populate_panel_with_content(self, content_name):
         """
@@ -169,13 +178,13 @@ class FrameHandler:
 
 
     def click_registration_for_cashier(self):
+        login_ = self.showed_frame.registration_field_login.get()
+        password_ = self.showed_frame.registration_field_password.get()
+        password_proof_ = self.showed_frame.registration_field_password_proof.get()
 
-        self.registration_label_login.configure(text="ФИО(Логин):")
-        self.switch_to_frame("RegistrationFrame")
-
-        code = utility.check_login_and_password_for_register(self.login, self.password, self.password_proof)
+        code = utility.check_login_and_password_for_register(login_, password_, password_proof_)
         if code == 100:
-            result = self.database.registration(self.login, self.password, "cashier")
+            result = self.database.registration(login_, password_, "cashier")
             if result == True:
                 messagebox.showinfo("Уведомление", "Кассир зарегистрирован")
                 self.switch_to_frame("AdminFrame")
@@ -186,13 +195,12 @@ class FrameHandler:
 
 
     def click_registration_for_machinist(self):
-
-        self.registration_label_login.configure(text="ФИО(Логин):")
-        self.switch_to_frame("RegistrationFrame")
-
-        code = utility.check_login_and_password_for_register(self.login, self.password, self.password_proof)
+        login_ = self.showed_frame.registration_field_login.get()
+        password_ = self.showed_frame.registration_field_password.get()
+        password_proof_ = self.showed_frame.registration_field_password_proof.get()
+        code = utility.check_login_and_password_for_register(login_, password_, password_proof_)
         if code == 100:
-            result = self.database.registration(self.login, self.password, "machinist")
+            result = self.database.registration(login_, password_, "machinist")
             if result == True:
                 messagebox.showinfo("Уведомление", "Машинист зарегистрирован")
                 self.switch_to_frame("AdminFrame")

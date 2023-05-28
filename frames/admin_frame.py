@@ -15,7 +15,7 @@ class AdminFrame(BaseFrame):
                                                             height=35,
                                                             fg_color="#FF7F50",
                                                             font=("Arial Bold", 15),
-                                                            command=lambda: controller.click_registration_for_cashier())
+                                                            command=lambda: controller.switch_to_frame("CashierRegistrationFrame"))
         self.admin_main_menu_label_registration_cashier.pack(padx=120, pady=20)
 
         self.admin_main_menu_label_registration_machinist = tk.CTkButton(self, text="Регистрация нового машиниста",
@@ -23,7 +23,7 @@ class AdminFrame(BaseFrame):
                                                                        width=230,
                                                                        height=35,
                                                                        font=("Arial Bold", 15),
-                                                                       command=lambda: controller.click_registration_for_machinist())
+                                                                       command=lambda: controller.switch_to_frame("MachinistRegistrationFrame"))
         self.admin_main_menu_label_registration_machinist.pack(padx=120, pady=20)
 
         self.admin_main_menu_label_registration_add_new_route = tk.CTkButton(self, text="Рейсы",
@@ -38,7 +38,8 @@ class AdminFrame(BaseFrame):
                                                                          fg_color="#FF7F50",
                                                                          width=230,
                                                                          height=35,
-                                                                         font=("Arial Bold", 15))
+                                                                         font=("Arial Bold", 15),
+                                                                command=lambda: controller.switch_to_frame("AddNewTrain"))
         self.admin_main_menu_label_add_new_train.pack(padx=120, pady=20)
 
 

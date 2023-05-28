@@ -1,7 +1,6 @@
 
 
 class RouteBase:
-
     def __init__(self, routes_file_name):
         self.routes_file_name = routes_file_name
 

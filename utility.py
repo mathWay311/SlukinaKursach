@@ -16,7 +16,14 @@ MAXIMUM_LOGIN_LENGTH = 15
 MAXIMUM_PASSWORD_LENGTH = 15
 
 
-def check_login_and_password_for_register(login, password, password_proof):
+def check_login_and_password_for_register(login : str, password : str, password_proof : str) -> int:
+    """
+
+    :param login: Логин
+    :param password: Пароль
+    :param password_proof: Подтверждение пароля
+    :return: Код ошибки или успеха
+    """
     if password != password_proof:
         return 400
     if len(login.strip()) < MINIMUM_LOGIN_LENGTH:
