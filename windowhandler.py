@@ -50,7 +50,7 @@ class FrameHandler:
             "UserFrame": "Пользователь",
             "MachinistFrame": "Машинист",
             "MachinistRegistrationFrame": "Регистрация машиниста",
-            "CashierRegistrationFrame": "Регистрация машиниста",
+            "CashierRegistrationFrame": "Регистрация кассира",
             "CashierFrame": "Кассир",
             "AdminFrame": "Администратор",
             "BuyTicket": "Покупка билета",
@@ -136,7 +136,21 @@ class FrameHandler:
             messagebox.showerror("Ошибка", utility.errorcodes_descriptions[code])
 
     def add_new_train(self):
-        pass
+        _data = self.showed_frame.add_route_main_window_entry_data.get()
+        _city_beg = self.showed_frame.add_route_main_window_entry_city_beg.get()
+        _city_end = self.showed_frame.add_route_main_window_entry_city_end.get()
+        _name_train = self.showed_frame.add_route_main_window_entry_name_train.get()
+
+        code = utility.check_train()
+
+        if code == 100:
+            result = self.bd.add_new_route("route", _data + ";" + _city_beg + ";" + _city_end + ";" + _name_train)
+            if result == True:
+                messagebox.showinfo("Уведомление", "Успешно")
+            else:
+                messagebox.showerror("Ошибка", "Ошибка записи")
+        else:
+            messagebox.showerror("Ошибка", utility.errorcodes_descriptions[code])
 
 
     def populate_panel_with_content(self, content_name):
