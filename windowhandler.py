@@ -13,7 +13,7 @@ from frames.authorization_frame import AuthFrame
 from frames.entry_frame import EntryFrame
 from frames.registration_frame import RegistrationFrame
 from frames.users_frame import UserFrame
-from frames.machinist_Frame import MachinistFrame
+from frames.machinist_frame import MachinistFrame
 from frames.cashier_frame import CashierFrame
 from frames.admin_frame import AdminFrame
 from frames.buy_ticket_frame import BuyTicket
