@@ -41,7 +41,7 @@ class TrainModel(Model):
 
         :return: Строка
         """
-        return self.name + ";" + str(self.isOccupied) + ";"
+        return self.name + ";" + str(int(self.isOccupied)) + ";"
 
 
 class UserModel(Model):

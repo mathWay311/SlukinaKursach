@@ -2,6 +2,7 @@
 # 100 - Успех
 
 from tkinter import messagebox
+from use_BD import DB
 
 errorcodes_descriptions = { 400 : "Пароли не совпадают",
                             401 : "Слишком короткий логин",
@@ -45,15 +46,20 @@ def check_route_for_register(beg_city, end_city):
         return 405
     return 100
 
-def check_train(name, name_bd):
+def check_train(name : str) -> int:
     """
     Проверяет при создании поезда правильность введённых данных
 
     :param name: Название поезда
     :return: Результат проверки
     """
+    db = DB()
+    trains = db.get_all_from("train")
+
+    for train in trains:
+        if train.name == name:
+            return 407
+
     if len(name.strip()) == 0:
         return 406
-    if name == name_bd:
-        return 407
     return 100

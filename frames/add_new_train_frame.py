@@ -36,10 +36,10 @@ class AddNewTrain(BaseFrame):
                                                                        command=lambda: controller.add_new_train())
         self.add_train_button.pack(padx=10, pady=10)
 
-        self.exit_submit = tk.CTkButton(self, text="В главное меню",
+        self.exit_submit = tk.CTkButton(self, text="Назад",
                                                                  fg_color="#FF6347",
                                                                  font=("Arial Bold", 15),
-                                                                 command=lambda: controller.click_back_to_main_menu_admin())
+                                                                 command=lambda: controller.show_trains())
 
         self.exit_submit.pack(padx=10, pady=10)
 

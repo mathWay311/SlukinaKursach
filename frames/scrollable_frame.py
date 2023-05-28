@@ -3,9 +3,9 @@ import customtkinter as tk
 class ScrollableFrame(tk.CTkFrame):
     def __init__(self, container, *args, **kwargs):
         super().__init__(container, *args, **kwargs)
-        canvas = tk.CTkCanvas(self)
+        canvas = tk.CTkCanvas(self, background="#FF7F50")
         scrollbar = tk.CTkScrollbar(self, orientation="vertical", command=canvas.yview)
-        self.scrollable_frame = tk.CTkFrame(canvas)
+        self.scrollable_frame = tk.CTkFrame(canvas, bg_color="#FF7F50")
 
         self.scrollable_frame.bind(
             "<Configure>",

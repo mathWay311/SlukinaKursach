@@ -31,7 +31,7 @@ class AdminFrame(BaseFrame):
                                                                          height=35,
                                                                          fg_color="#FF7F50",
                                                                          font=("Arial Bold", 15),
-                                                                         command=lambda: controller.switch_to_frame("AddNewRoute"))
+                                                                         command=lambda: controller.show_routes())
         self.admin_main_menu_label_registration_add_new_route.pack(padx=120, pady=20)
 
         self.admin_main_menu_label_add_new_train = tk.CTkButton(self, text="Поезда",
@@ -39,7 +39,7 @@ class AdminFrame(BaseFrame):
                                                                          width=230,
                                                                          height=35,
                                                                          font=("Arial Bold", 15),
-                                                                command=lambda: controller.switch_to_frame("AddNewTrain"))
+                                                                command=lambda: controller.show_trains())
         self.admin_main_menu_label_add_new_train.pack(padx=120, pady=20)
 
 

@@ -182,7 +182,7 @@ users_table = Table("users", "UserModel")
 users_table.column_config = ["Login", "Password", "Role"]
 
 route_table = Table("route", "RouteModel")
-route_table.column_config = ["ID", "City_Beg", "City_End", "Name"]
+route_table.column_config = ["ID", "DeptTime", "CityBeg", "CityEnd", "TrainID", "MachinistID"]
 
 wagon_table = Table("wagon", "WagonModel")
 wagon_table.column_config = ["ID", "Type", "Number", "Seats", "TrainID"]
@@ -197,7 +197,7 @@ class DB:
     def __init__(self):
         self.tables = {"users": users_table, "route": route_table, "train": train_table, "wagon": wagon_table}
 
-    def get_all_from(self, table_name):
+    def get_all_from(self, table_name : str) -> list[Model]:
         return self.tables[table_name].get_all()
 
     def delete_by_id(self, table_name, id):
@@ -207,4 +207,42 @@ class DB:
         result = self.tables[table_name].add_record(record)
         return result
 
+    def alter(self, table_name, id, column, text):
+        self.tables[table_name].alter_record(id,column,text)
 
+    def search_line(self, table_name, column, search_string):
+        return self.tables[table_name].search_line(column, search_string)
+
+    def search_list(self, table_name, column, search_string):
+        return self.tables[table_name].search_list(column, search_string)
+
+    def search_model(self, table_name, column, search_string) -> Model:
+        return self.tables[table_name].search_model(column, search_string)
+
+    def get_all_where(self, table_name, column, text):
+        self.tables[table_name].get_all_where(column, text)
+
+    def delete_train(self, model : TrainModel):
+        """
+        Удаляет поезд по id вместе с созданными ранее вагонами
+
+        :param id: ID поезда
+        :return:
+        """
+
+        if model.isOccupied:
+            messagebox.showerror("Ошибка", "Поезд назначен на рейс")
+        else:
+            self.delete_by_id("train", model.id)
+            for wagon in self.tables["wagon"].get_all():
+                if str(wagon.trainID) == str(model.id):
+                    self.delete_by_id("wagon", str(wagon.id))
+
+    def delete_route(self, model : RouteModel):
+        """
+        Удаляет рейс по id
+
+        :param id: ID рейса
+        :return:
+        """
+        self.delete_by_id("route", model.id)

@@ -29,6 +29,13 @@ from frames.return_ticket_frame import ReturnTicket
 from frames.add_new_route_frame import AddNewRoute
 from frames.add_new_train_frame import AddNewTrain
 
+from frames.train_frame import ShowTrain
+from frames.route_frame import ShowRoute
+
+from frames.utility.view_train import TrainView
+from frames.utility.view_route import RouteView
+
+
 from frames.scrollable_frame import ScrollableFrame
 
 from tkinter import messagebox
@@ -54,6 +61,8 @@ class FrameHandler:
             "CashierFrame": "Кассир",
             "AdminFrame": "Администратор",
             "BuyTicket": "Покупка билета",
+            "ShowTrain": "Поезда",
+            "ShowRoute": "Рейсы",
             "ReturnTicket": "Возврат билета кассиром",
             "AddNewRoute": "Добавление нового рейса",
             "AddNewTrain": "Добавление нового поезда"
@@ -142,7 +151,7 @@ class FrameHandler:
 
         train = TrainModel([0, _name, 0])
 
-        code = utility.check_train(_name, self.showed_frame.train_name.get())
+        code = utility.check_train(_name)
 
         if code == 100:
 
@@ -178,12 +187,32 @@ class FrameHandler:
         self.showed_frame.content_panel = ScrollableFrame(self.showed_frame)
         scrollbar = tk.CTkScrollbar
 
+
         for model in models:
-            if content_name == "machinist":
-                dir = MachinistModel(model, self, self.showed_frame.content_panel.scrollable_frame)
+            print("Моделька есть")
+            if content_name == "train":
+                train = TrainView(model, self, self.showed_frame.content_panel.scrollable_frame)
+            if content_name == "route":
+                route = RouteView(model, self, self.showed_frame.content_panel.scrollable_frame)
 
-        self.showed_frame.content_panel.pack(side = tk.TOP,expand = 1, fill= tk.BOTH)
 
+        self.showed_frame.content_panel.pack()
+
+    def show_trains(self):
+        self.switch_to_frame("ShowTrain")
+        self.populate_panel_with_content("train")
+        self.showed_frame.add_train.pack_forget()
+        self.showed_frame.exit_submit.pack_forget()
+        self.showed_frame.add_train.pack(side = tk.RIGHT, padx = 30, pady = 10)
+        self.showed_frame.exit_submit.pack(side = tk.LEFT, padx = 30, pady = 10)
+
+    def show_routes(self):
+        self.switch_to_frame("ShowRoute")
+        self.populate_panel_with_content("route")
+        self.showed_frame.add_route.pack_forget()
+        self.showed_frame.exit_submit.pack_forget()
+        self.showed_frame.add_route.pack(side = tk.RIGHT, padx = 30, pady = 10)
+        self.showed_frame.exit_submit.pack(side = tk.LEFT, padx = 30, pady = 10)
 
 
     def click_registration_submit(self):
@@ -244,7 +273,20 @@ class FrameHandler:
     def click_delete_ticket_submit(self):
         pass
 
+    def click_delete_train_submit(self, model : TrainModel):
+        ans = messagebox.askokcancel("Внимание", "Вы уверены?")
+        if ans:
+            self.bd.delete_train(model)
+            self.show_trains()
 
+    def click_delete_route_submit(self, model : RouteModel):
+        ans = messagebox.askokcancel("Внимание", "Вы уверены?")
+        if ans:
+            self.bd.delete_route(model)
+            self.show_routes()
+
+    def refresh(self):
+        self.populate_panel_with_content(self.current_content)
 
     # По нажатию на кнопку Войти
     def click_entry_submit(self):

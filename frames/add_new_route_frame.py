@@ -57,7 +57,7 @@ class AddNewRoute(BaseFrame):
         self.add_route_main_window_button_submit_search = tk.CTkButton(self, text="Добавить рейс",
                                                                            fg_color="#FF7F50",
                                                                            font=("Arial Bold", 15),
-                                                                       command=lambda: controller.add_new_route(lambda: self.add_route_main_window_label_data.get()))
+                                                                       command=lambda: controller.add_new_route())
         self.add_route_main_window_button_submit_search.pack(padx=10, pady=10)
 
         self.add_route_button_exit_submit = tk.CTkButton(self, text="В главное меню",
