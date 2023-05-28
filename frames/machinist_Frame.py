@@ -58,6 +58,6 @@ class MachinistRegistrationFrame(BaseFrame):
                                                      width=200,
                                                      height=35,
                                                      font = ("Arial Bold", 15),
-                                                     command=lambda :controller.switch_to_frame("AdminFrame"))
+                                                     command=lambda :controller.click_back_to_main_menu_admin())
         self.registration_button_back.pack(padx=30, pady=10)
         self.pack()
