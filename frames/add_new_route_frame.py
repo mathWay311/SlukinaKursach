@@ -7,7 +7,7 @@ class AddNewRoute(BaseFrame):
         self.add_route_main_window_label_info = tk.CTkLabel(self, text="Добавление нового рейса", font=("Arial Bold", 20))
         self.add_route_main_window_label_info.pack(padx=100, pady=5)
 
-        self.add_route_main_window_label_data = tk.CTkLabel(self, text='Дата в формате: "дд мм чч:мм" (например: 12 мая 13:00)',
+        self.add_route_main_window_label_data = tk.CTkLabel(self, text='Дата',
                                                                    font=("Arial Bold", 15))
         self.add_route_main_window_label_data.pack()
 

@@ -142,21 +142,24 @@ class FrameHandler:
 
         train = TrainModel([0, _name, 0])
 
-        code = utility.check_train(_name)
+        code = utility.check_train(_name, self.showed_frame.train_name.get())
 
-        if code:
+        if code == 100:
+
             train_id = self.bd.add_new_record("train", train.db_add_string())
-            messagebox.showinfo("Уведомление", "Вы добавили поезд " + _name)
+            num_coupe_last = 0
+            for i in range(int(_num_of_wagons_coupe)):
+                coupe_model = WagonModel([0, "Купе", str(i), "", str(train_id)])
+                self.bd.add_new_record("wagon", coupe_model.db_add_string())
+                num_coupe_last = i
+            num_coupe_last += 1
+            for i in range(num_coupe_last, num_coupe_last + int(_num_of_wagons_placcart)):
+                placcart_model = WagonModel([0, "Плацкарт", str(i), "", str(train_id)])
+                self.bd.add_new_record("wagon", placcart_model.db_add_string())
 
-        num_coupe_last = 0
-        for i in range(int(_num_of_wagons_coupe)):
-            coupe_model = WagonModel([0, "Купе", str(i), "", str(train_id)])
-            self.bd.add_new_record("wagon", coupe_model.db_add_string())
-            num_coupe_last = i
-        num_coupe_last += 1
-        for i in range(num_coupe_last, num_coupe_last + int(_num_of_wagons_placcart)):
-            placcart_model = WagonModel([0, "Плацкарт", str(i), "", str(train_id)])
-            self.bd.add_new_record("wagon", placcart_model.db_add_string())
+            messagebox.showinfo("Уведомление", "Вы добавили поезд " + _name)
+        else:
+            messagebox.showerror("Ошибка", utility.errorcodes_descriptions[code])
 
 
 

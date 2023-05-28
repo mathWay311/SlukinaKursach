@@ -8,7 +8,9 @@ errorcodes_descriptions = { 400 : "Пароли не совпадают",
                             402 : "Слишком короткий пароль",
                             403 : "Слишком длинный логин",
                             404 : "Слишком длинный пароль",
-                            405 : "Город отправления и прибытия не могут совпадать"
+                            405 : "Город отправления и прибытия не могут совпадать",
+                            406 : "Пустое имя поезда",
+                            407 : "Такое название поезда уже существует"
                             }
 
 MINIMUM_LOGIN_LENGTH = 4
@@ -43,7 +45,7 @@ def check_route_for_register(beg_city, end_city):
         return 405
     return 100
 
-def check_train(name: str) -> bool:
+def check_train(name, name_bd):
     """
     Проверяет при создании поезда правильность введённых данных
 
@@ -51,7 +53,7 @@ def check_train(name: str) -> bool:
     :return: Результат проверки
     """
     if len(name.strip()) == 0:
-        messagebox.showerror("Ошибка", "Пустое имя поезда")
-        return False
-    else:
-        return True
+        return 406
+    if name == name_bd:
+        return 407
+    return 100
