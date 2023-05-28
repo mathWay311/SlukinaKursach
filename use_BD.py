@@ -75,6 +75,13 @@ users_table.column_config = ["Login", "Password", "Role"]
 route_table = Table("route")
 route_table.column_config = ["ID", "City_Beg", "City_End", "Name"]
 
+wagon_table = Table("wagon")
+wagon_table.column_config = ["ID", "Type", "Number", "Seats", "TrainID"]
+
+train_table = Table("train")
+train_table.column_config = ["ID", "Name"]
+
+
 #   <--------Таблицы--------->
 
 class DB:

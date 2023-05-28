@@ -3,5 +3,3 @@ import windowhandler
 
 
 window = windowhandler.MainWindow()
-
-
