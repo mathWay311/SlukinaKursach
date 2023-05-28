@@ -136,6 +136,7 @@ class FrameHandler:
             messagebox.showerror("Ошибка", utility.errorcodes_descriptions[code])
 
     def add_new_train(self):
+        pass
 
 
     def populate_panel_with_content(self, content_name):
