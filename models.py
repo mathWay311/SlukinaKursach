@@ -24,8 +24,8 @@ class RouteModel(Model):
         self.dept_time = line[1]
         self.from_ = line[2]
         self.to_ = line[3]
-        self.trainID = int(line[4])
-        self.machinistID = int(line[5])
+        self.trainName = line[4]
+        self.machinistName = line[5]
 
 
 class TrainModel(Model):
@@ -47,9 +47,9 @@ class TrainModel(Model):
 class UserModel(Model):
     def __init__(self, line):
         super().__init__(line)
-        self.id = int(line[0])
-        self.from_ = line[1]
-        self.to_ = line[2]
+        self.name = line[0]
+        self.password = line[1]
+        self.role = line[2]
 
 
 class WagonModel(Model):

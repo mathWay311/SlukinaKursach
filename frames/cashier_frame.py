@@ -4,7 +4,7 @@ from base_frame import BaseFrame
 
 class CashierFrame(BaseFrame):
     def create_widgets(self, controller):
-
+        # XD бля не могу с этих cashier_main_window_label_info_pentagon_vzlomat_unichtozhit_label_computer_linux_windows_select_transaqt_bmw_audi_magnitola
         self.cashier_main_window_label_info = tk.CTkLabel(self, font=("Arial Bold", 20))
         self.cashier_main_window_label_info.pack(pady=10)
 

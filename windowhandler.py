@@ -121,23 +121,26 @@ class FrameHandler:
         self.showed_frame.machinist_main_window_label_info.configure(
             text="Добро пожаловать, " + self.login_entry + "\n" + "Вы вошли в систему как машинист")
 
-# <------------>
-
     def click_back_to_main_from_account(self):
         if self.message_to_confirm_transition():
             self.switch_to_frame("AuthFrame")
 
+# <------------>
+
+
+
     def add_new_route(self):
-        _data = self.showed_frame.add_route_main_window_entry_data.get()
-        _city_beg = self.showed_frame.add_route_main_window_entry_city_beg.get()
-        _city_end = self.showed_frame.add_route_main_window_entry_city_end.get()
-        _name_train = self.showed_frame.add_route_main_window_entry_name_train.get()
+        _data = self.showed_frame.entry_data.get()
+        _city_beg = self.showed_frame.entry_city_beg.get()
+        _city_end = self.showed_frame.entry_city_end.get()
+        _name_train = self.showed_frame.entry_name_train.get()
+        _name_machinist = self.showed_frame.entry_name_machinist.get()
 
         code = utility.check_route_for_register(_city_beg, _city_end)
 
         if code == 100:
-            result = self.bd.add_new_record("route", _data + ";" + _city_beg + ";" + _city_end + ";" + _name_train)
-            if result == True:
+            result = self.bd.add_new_record("route", _data + ";" + _city_beg + ";" + _city_end + ";" + _name_train + ";" + _name_machinist + ";")
+            if result != False:
                 messagebox.showinfo("Уведомление", "Успешно")
             else:
                 messagebox.showerror("Ошибка", "Ошибка записи")
@@ -189,7 +192,6 @@ class FrameHandler:
 
 
         for model in models:
-            print("Моделька есть")
             if content_name == "train":
                 train = TrainView(model, self, self.showed_frame.content_panel.scrollable_frame)
             if content_name == "route":
@@ -214,6 +216,29 @@ class FrameHandler:
         self.showed_frame.add_route.pack(side = tk.RIGHT, padx = 30, pady = 10)
         self.showed_frame.exit_submit.pack(side = tk.LEFT, padx = 30, pady = 10)
 
+    # <------получить доступные------>
+
+    def get_available_machinists(self) -> list[UserModel]:
+        models = self.bd.get_all_from("users")
+        output = []
+        for model in models:
+            if model.role == "machinist":
+                output.append(model)
+        return output
+
+    def get_available_trains(self) -> list[TrainModel]:
+        """
+        Получает список доступных поездов. То бишь не isOccupied.
+        :return: Список обьектов класса TrainModel с флагом isOccupied == False
+        """
+        models = self.bd.get_all_from("train")
+        output = []
+        for model in models:
+            if not model.isOccupied:
+                output.append(model)
+        return output
+
+    # <------получить доступные------>
 
     def click_registration_submit(self):
         self.login = self.showed_frame.registration_field_login.get()
@@ -267,10 +292,24 @@ class FrameHandler:
 
 
     def click_registration_submit_cashier(self):
+        """
+        Это вообще надо?
+        Чекнул, не надо вродь.
+        В след. коммите удалю
+        FIXME: DEPRECATED
+        :return:
+        """
         pass
 
 
     def click_delete_ticket_submit(self):
+        """
+        Это вообще надо?
+        Чекнул, не надо вродь.
+        В след. коммите удалю
+        FIXME: DEPRECATED
+        :return:
+        """
         pass
 
     def click_delete_train_submit(self, model : TrainModel):
@@ -286,15 +325,22 @@ class FrameHandler:
             self.show_routes()
 
     def refresh(self):
+        """
+        Это вообще надо?
+        Чекнул, не надо вродь.
+        В след. коммите удалю
+        FIXME: DEPRECATED
+        :return:
+        """
         self.populate_panel_with_content(self.current_content)
 
-    # По нажатию на кнопку Войти
+
     def click_entry_submit(self):
-        # Получаем из полей ввода данные
+
         self.login_entry = self.showed_frame.entry_field_login.get()
         password = self.showed_frame.entry_field_password.get()
 
-        # Просим базу данных чекнуть есть ли такая запись о пользователе.
+
         result = self.database.check_login(self.login_entry, password)
 
         if result == 101:
@@ -309,35 +355,52 @@ class FrameHandler:
             messagebox.showerror("Ошибка!", "Такого пользователя не существует или пароль неверный")
 
     def click_buy_ticket_search(self):
-        beg_city = self.showed_frame.buy_ticket_main_window_label_city_begin.get()
-        end_city = self.showed_frame.buy_ticket_main_window_label_city_end.get()
-        result = self.routebase.check_cities_when_buying(beg_city, end_city)
-        while result:
-            new_listbox = result
-            self.showed_frame.list_to_route_buy_ticket.configure(listvariable=new_listbox)
+        """
+        Вывод в комбобокс найденных по городу началу и городу конца рейсов.
+        Поиск реализован через поиск подстроки в строке и работает только если оба условия выполняются.
+        Замена на OR обеспечит слишком мягкий поиск. По сути при нахождении города отправления город конечный
+        уже не будет ни на что влиять. Короче пусть так остаётся.
+
+        Для поиска НЕОБХОДИМО вводить город начала и город конца (Хотя бы одну букву)
+
+        :return:
+        """
+        beg_city = self.showed_frame.label_city_begin.get()
+        end_city = self.showed_frame.label_city_end.get()
+
+        # ---------------ПОИСК--------------
+        result = []
+        models = self.bd.get_all_from("route")
+        for model in models:
+            beg_city_flag = False
+            end_city_flag = False
+            if beg_city.strip() != "":
+                beg_city_flag = (model.from_.find(beg_city ) != -1)
+            if end_city.strip() != "":
+                end_city_flag = (model.to_.find(end_city ) != -1)
+            if beg_city_flag and end_city_flag:
+                result.append(model)
+        # ----------------------------------
+
+        str_results = []
+        for model in result:
+            str_results.append(str(model.id) + " " + model.from_ + " - " + model.to_ + " ("+ model.dept_time + ")")
+
+        if len(str_results):
+            messagebox.showinfo("Поиск", "Найдено " + str(len(str_results)) + " билетов по вашему запросу")
+        else:
+            messagebox.showerror("Поиск", "Ничего не найдено")
+        self.showed_frame.list_to_route_buy_ticket.configure(values=str_results)
 
 
     def click_return_ticket_search_for_cashier(self):
+        """
+        Хуета
+        :return:
+        """
         surname = self.showed_frame.return_ticket_main_window_label_surname.get()
         name = self.showed_frame.return_ticket_main_window_label_name.get()
         patronymic = self.showed_frame.return_ticket_main_window_label_patronymic.get()
-
-
-   # def populate_panel_with_content(self, content_name):
-      #  if content_name == "route":
-        #    self.current_content = "route"
-         #   lines = self.bd.get_all_from("route")
-
-          #  self.showed_frame.content_panel.destroy()
-           # self.showed_frame.content_panel = ScrollableFrame(self.showed_frame)
-           # scrollbar = tk.CTkScrollbar
-
-           # for i in range(len(lines)):
-            #    line = lines[i].split(";")
-            #    dir = Direction(line, self, self.showed_frame.content_panel.scrollable_frame, line[0])
-
-           # self.showed_frame.content_panel.pack(side = tk.TOP,expand = 1, fill= tk.BOTH)
-
 
 class MainWindow():
     def __init__ (self):
@@ -347,8 +410,10 @@ class MainWindow():
         self.window.resizable(True, True)
 
         self.database = db.DataBase("BaseData/users.db")
-        self.routebase = rb.RouteBase("BaseData/route.db")
+        self.routebase = rb.RouteBase("BaseData/route.db") # Пиздотня глубоко корни пустила
+        # FIXME: УДАЛИТЬ ЭТУ ^^^^^^^^^^
         self.buyersbase = bb.BuyersBase("BaseData/buyers.db")
+        # FIXME: УДАЛИТЬ ЭТУ ^^^^^^^^^^
 
         self.frame_handler = FrameHandler(self.window, self.database, self.routebase, self.buyersbase) # Создаём диспетчера фреймов описанного выше
         self.window.mainloop()
