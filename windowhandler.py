@@ -104,7 +104,7 @@ class FrameHandler:
         return self.answer
 
     def delete_by_id(self, table, id):
-        result = messagebox.askokcancel("Вы уверены?", "Удалённые данные будут потеряны безвозвратно")
+        result = messagebox.askyesno("Вы уверены?", "Удалённые данные будут потеряны безвозвратно")
         if result:
             self.bd.delete_by_id(table, id)
             #self.refresh()
@@ -420,13 +420,13 @@ class FrameHandler:
 
 
     def click_delete_train_submit(self, model : TrainModel):
-        ans = messagebox.askokcancel("Внимание", "Вы уверены?")
+        ans = messagebox.askyesno("Внимание", "Вы уверены?")
         if ans:
             self.bd.delete_train(model)
             self.show_trains()
 
     def click_delete_route_submit(self, model : RouteModel):
-        ans = messagebox.askokcancel("Внимание", "Вы уверены?")
+        ans = messagebox.askyesno("Внимание", "Вы уверены?")
         if ans:
             self.bd.delete_route(model)
             if self.role == "machinist":
@@ -534,7 +534,7 @@ class FrameHandler:
 
     def click_delete_ticket(self):
         id = self.showed_frame.ticket_list.get().split()[0]
-        ans = messagebox.askokcancel("Вернуть билет", "Вы уверены?")
+        ans = messagebox.askyesno("Вернуть билет", "Вы уверены?")
         if ans:
             self.bd.delete_by_id("buyers", id)
             self.showed_frame.ticket_list.set("")
