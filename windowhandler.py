@@ -1,7 +1,6 @@
 import customtkinter as tk
 import database as db
-import routebase as rb
-import buyersbase as bb
+
 import use_BD as bd
 import utility
 from models import *
@@ -35,21 +34,24 @@ from frames.route_frame import ShowRoute
 from frames.utility.view_train import TrainView
 from frames.utility.view_route import RouteView
 
+from frames.select_place_and_buy import SelectPlaceAndBuy
+from frames.show_tickets_frame import ShowTicketsFrame
+
+from frames.return_ticket_user_frame import ReturnTicketUser
 
 from frames.scrollable_frame import ScrollableFrame
 
 from tkinter import messagebox
 
 class FrameHandler:
-    def __init__(self, root_window, database, routebase, buyersbase):
+    def __init__(self, root_window, database):
         self.bd = bd.DB()
         root_window.config(bg='#FFBDA0')
        # tk.set_default_color_theme("blue")
         self.root = root_window
         self.showed_frame = ""
         self.database = database
-        self.routebase = routebase
-        self.buyersbase = buyersbase
+
         self.title_dict = {
             "AuthFrame": "Железнодорожный вокзал",
             "EntryFrame": "Войти",
@@ -65,12 +67,17 @@ class FrameHandler:
             "ShowRoute": "Рейсы",
             "ReturnTicket": "Возврат билета кассиром",
             "AddNewRoute": "Добавление нового рейса",
-            "AddNewTrain": "Добавление нового поезда"
+            "AddNewTrain": "Добавление нового поезда",
+            "SelectPlaceAndBuy": "Заполните информацию",
+            "ShowTicketsFrame" : "Ваши билеты",
+            "ReturnTicketUser" : "Верните ваш билет"
         }
 
         self.showed_frame = AuthFrame(root_window, self)
         self.showed_frame.create_widgets(self)
 
+        self.login_entry = ""
+        self.role = ""
 
 
         # Сменить фрейм по имени
@@ -160,7 +167,7 @@ class FrameHandler:
 
             train_id = self.bd.add_new_record("train", train.db_add_string())
             num_coupe_last = 0
-            for i in range(int(_num_of_wagons_coupe)):
+            for i in range(1, int(_num_of_wagons_coupe)):
                 coupe_model = WagonModel([0, "Купе", str(i), "", str(train_id)])
                 self.bd.add_new_record("wagon", coupe_model.db_add_string())
                 num_coupe_last = i
@@ -173,8 +180,65 @@ class FrameHandler:
         else:
             messagebox.showerror("Ошибка", utility.errorcodes_descriptions[code])
 
+    def add_new_ticket(self):
 
+        name_ = self.showed_frame.name_entry.get()
+        surname_ = self.showed_frame.surname_entry.get()
+        patronymic_ = self.showed_frame.patronymic_entry.get()
+        serial_ = self.showed_frame.seria_entry.get()
+        number_ = self.showed_frame.number_entry.get()
+        login_ = self.login_entry
+        route_id_ = self.selected_route.split(" ")[0]
+        wagon_num_ = self.showed_frame.wagon_select.get().split(" ")[0]
+        place_ = self.showed_frame.place_select.get()
 
+        code = utility.check_ticket(name_, surname_, patronymic_, serial_, number_, login_, route_id_, wagon_num_, place_)
+
+        if code == 100:
+            result = self.bd.add_new_record("buyers", name_ + ";" + surname_ + ";" +  patronymic_ + ";" +  serial_ + ";" +  number_ + ";" +  login_ + ";" +  route_id_ + ";" +  wagon_num_ + ";" +  place_ + ";")
+            if result != False:
+                messagebox.showinfo("Уведомление", "Успешно")
+                self.switch_to_frame("BuyTicket")
+            else:
+                messagebox.showerror("Ошибка", "Ошибка записи")
+        else:
+            messagebox.showerror("Ошибка", utility.errorcodes_descriptions[code])
+
+    def show_tickets_for_current_user(self):
+        tickets = self.bd.get_all_from("buyers")
+        ticket_model_list = []
+        for ticket in tickets:
+            if ticket.login == self.login_entry:
+                ticket_model_list.append(ticket)
+
+        strings = []
+        for ticket in ticket_model_list:
+            route = self.bd.search_model("route", "ID", ticket.routeID)
+            print(ticket.wagonID)
+            wagon = self.bd.search_model("wagon", "Number", ticket.wagonID)
+            strings.append(route.dept_time + " " + route.from_ + " - " + route.to_ + " | Вагон:" + wagon.type + " Номер " + str(ticket.wagonID) + " Место: " + ticket.place)
+        return strings
+
+    def show_tickets_for_current_user_withIDS(self):
+        tickets = self.bd.get_all_from("buyers")
+        ticket_model_list = []
+        for ticket in tickets:
+            if ticket.login == self.login_entry:
+                ticket_model_list.append(ticket)
+
+        strings = []
+        for ticket in ticket_model_list:
+            route = self.bd.search_model("route", "ID", ticket.routeID)
+            print(ticket.wagonID)
+            wagon = self.bd.search_model("wagon", "Number", ticket.wagonID)
+            strings.append(str(ticket.id) + " " + route.dept_time + " " + route.from_ + " - " + route.to_ + " | Вагон:" + wagon.type + " Номер " + str(ticket.wagonID) + " Место: " + ticket.place)
+        return strings
+
+    def click_away_from_ticket_buy(self):
+        if self.role == "user":
+            self.click_back_to_main_menu_user()
+        elif self.role == "cashier":
+            self.click_back_to_main_menu_cashier()
 
     def populate_panel_with_content(self, content_name):
         """
@@ -238,7 +302,59 @@ class FrameHandler:
                 output.append(model)
         return output
 
+    def get_all_wagons(self, trainID: int) -> list[WagonModel]:
+        """
+        Получает список доступных вагонов для покупки билета.
+        :param trainID: Айдишник поезда
+        :return:
+        """
+        models = self.bd.get_all_from("wagon")
+        output = []
+        for model in models:
+            if model.trainID == trainID:
+                if not(model.seats_string.find("0") == -1):
+                    output.append(model)
+        return output
+
+    def get_avail_seats(self, wagonName: str) -> list[str]:
+        wagon_model = self.bd.search_model("wagon", "Number", wagonName)
+        train_id = wagon_model.trainID
+        train_name = self.bd.search_model("train", "ID", train_id).name
+        route_model =  self.bd.search_model("route", "TrainName", train_name)
+
+
+        max_places = 0
+        if wagon_model.type == "Купе":
+            max_places = 10
+        if wagon_model.type == "Плацкарт":
+            max_places = 20
+
+        list_of_seats = [i for i in range(1, max_places + 1)]
+
+        tickets = self.bd.get_all_from("buyers")
+        for ticket in tickets:
+            if ticket.routeID == route_model.id:
+                if str(ticket.wagonID) == str(wagon_model.number):
+                    list_of_seats.remove(int(ticket.place))
+
+        for i in range(len(list_of_seats)):
+            list_of_seats[i] = str(list_of_seats[i])
+        return list_of_seats
+
+
+
     # <------получить доступные------>
+
+    def get_trainID_of_route(self, route_string: str) -> int:
+        """
+        По указанной строке рейса находит айдишник поезда
+        :param route_string:
+        :return: ID (int)
+        """
+        id = route_string.split(" ")[0]
+        train_name = self.bd.search_model("route", "ID", id).trainName
+        return self.bd.search_model("train", "Name", train_name).id
+
 
     def click_registration_submit(self):
         self.login = self.showed_frame.registration_field_login.get()
@@ -291,27 +407,6 @@ class FrameHandler:
 
 
 
-    def click_registration_submit_cashier(self):
-        """
-        Это вообще надо?
-        Чекнул, не надо вродь.
-        В след. коммите удалю
-        FIXME: DEPRECATED
-        :return:
-        """
-        pass
-
-
-    def click_delete_ticket_submit(self):
-        """
-        Это вообще надо?
-        Чекнул, не надо вродь.
-        В след. коммите удалю
-        FIXME: DEPRECATED
-        :return:
-        """
-        pass
-
     def click_delete_train_submit(self, model : TrainModel):
         ans = messagebox.askokcancel("Внимание", "Вы уверены?")
         if ans:
@@ -324,16 +419,6 @@ class FrameHandler:
             self.bd.delete_route(model)
             self.show_routes()
 
-    def refresh(self):
-        """
-        Это вообще надо?
-        Чекнул, не надо вродь.
-        В след. коммите удалю
-        FIXME: DEPRECATED
-        :return:
-        """
-        self.populate_panel_with_content(self.current_content)
-
 
     def click_entry_submit(self):
 
@@ -345,12 +430,16 @@ class FrameHandler:
 
         if result == 101:
             self.click_back_to_main_menu_admin()
+            self.role = "admin"
         elif result == 102:
             self.click_back_to_main_menu_user()
+            self.role = "user"
         elif result == 103:
             self.click_back_to_main_menu_cashier()
+            self.role = "cashier"
         elif result == 104:
             self.click_back_to_main_menu_machinist()
+            self.role = "machinist"
         else:
             messagebox.showerror("Ошибка!", "Такого пользователя не существует или пароль неверный")
 
@@ -392,15 +481,48 @@ class FrameHandler:
             messagebox.showerror("Поиск", "Ничего не найдено")
         self.showed_frame.list_to_route_buy_ticket.configure(values=str_results)
 
-
-    def click_return_ticket_search_for_cashier(self):
+    def select_route_and_proceed(self):
         """
-        Хуета
+        Выбрать рейс и продолжить в следующее окно выбора места.
         :return:
         """
-        surname = self.showed_frame.return_ticket_main_window_label_surname.get()
-        name = self.showed_frame.return_ticket_main_window_label_name.get()
-        patronymic = self.showed_frame.return_ticket_main_window_label_patronymic.get()
+        self.selected_route = self.showed_frame.list_to_route_buy_ticket.get()
+        self.switch_to_frame("SelectPlaceAndBuy")
+
+
+    def click_return_ticket_search_for_cashier(self) -> list[BuyerModel]:
+
+
+        surname = self.showed_frame.entry_name.get()
+        name = self.showed_frame.entry_surname.get()
+        patronymic = self.showed_frame.entry_patronymic.get()
+
+        tickets = self.bd.get_all_from("buyers")
+
+        tickets_to_output = []
+        for ticket in tickets:
+            if surname == ticket.surname and name == ticket.name and patronymic == ticket.patronymic:
+                tickets_to_output.append(ticket)
+            print(surname + " " + ticket.surname + " " + name + " " + ticket.name + " " + patronymic + " " + ticket.patronymic)
+
+        list_str = []
+
+        for ticket in tickets_to_output:
+            list_str.append(str(ticket.id) + " " + ticket.name + " " + ticket.surname + " " + ticket.patronymic + " " + ticket.pass_serial + " " + ticket.pass_number)
+
+        self.showed_frame.ticket_list.configure(values = list_str)
+
+        if len(list_str):
+            messagebox.showinfo("Найдены билеты", "Найдено " + str(len(list_str)) + " билетов")
+        else:
+            messagebox.showerror("Ошибка", "Билетов на ФИО не найдено")
+
+    def click_delete_ticket(self):
+        id = self.showed_frame.ticket_list.get().split()[0]
+        ans = messagebox.askokcancel("Вернуть билет", "Вы уверены?")
+        if ans:
+            self.bd.delete_by_id("buyers", id)
+            self.showed_frame.ticket_list.set("")
 
 class MainWindow():
     def __init__ (self):
@@ -410,11 +532,8 @@ class MainWindow():
         self.window.resizable(True, True)
 
         self.database = db.DataBase("BaseData/users.db")
-        self.routebase = rb.RouteBase("BaseData/route.db") # Пиздотня глубоко корни пустила
-        # FIXME: УДАЛИТЬ ЭТУ ^^^^^^^^^^
-        self.buyersbase = bb.BuyersBase("BaseData/buyers.db")
-        # FIXME: УДАЛИТЬ ЭТУ ^^^^^^^^^^
 
-        self.frame_handler = FrameHandler(self.window, self.database, self.routebase, self.buyersbase) # Создаём диспетчера фреймов описанного выше
+
+        self.frame_handler = FrameHandler(self.window, self.database)
         self.window.mainloop()
 

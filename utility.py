@@ -11,14 +11,15 @@ errorcodes_descriptions = { 400 : "Пароли не совпадают",
                             404 : "Слишком длинный пароль",
                             405 : "Город отправления и прибытия не могут совпадать",
                             406 : "Пустое имя поезда",
-                            407 : "Такое название поезда уже существует"
+                            407 : "Такое название поезда уже существует",
+                            408 : "Неправильные пасспортные данные"
                             }
 
 MINIMUM_LOGIN_LENGTH = 4
 MINIMUM_PASSWORD_LENGTH = 6
 
-MAXIMUM_LOGIN_LENGTH = 15
-MAXIMUM_PASSWORD_LENGTH = 15
+MAXIMUM_LOGIN_LENGTH = 30
+MAXIMUM_PASSWORD_LENGTH = 30
 
 
 def check_login_and_password_for_register(login : str, password : str, password_proof : str) -> int:
@@ -45,6 +46,12 @@ def check_route_for_register(beg_city, end_city):
     if beg_city == end_city:
         return 405
     return 100
+
+def check_ticket(name_, surname_, patronymic_, serial_, number_, login_, route_id_, wagon_id_, place_):
+    if len(serial_) != 4 or len(number_) != 6:
+        return 408
+    return 100
+
 
 def check_train(name : str) -> int:
     """

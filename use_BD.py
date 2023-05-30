@@ -182,7 +182,7 @@ users_table = Table("users", "UserModel")
 users_table.column_config = ["Login", "Password", "Role"]
 
 route_table = Table("route", "RouteModel")
-route_table.column_config = ["ID", "DeptTime", "CityBeg", "CityEnd", "TrainID", "MachinistID"]
+route_table.column_config = ["ID", "DeptTime", "CityBeg", "CityEnd", "TrainName", "MachinistName"]
 
 wagon_table = Table("wagon", "WagonModel")
 wagon_table.column_config = ["ID", "Type", "Number", "Seats", "TrainID"]
@@ -190,12 +190,14 @@ wagon_table.column_config = ["ID", "Type", "Number", "Seats", "TrainID"]
 train_table = Table("train", "TrainModel")
 train_table.column_config = ["ID", "Name"]
 
+buyers_table = Table("buyers", "BuyerModel")
+buyers_table.column_config = ["ID", "Surname", "Name", "Patronymic", "PassportSerial", "PassportNumber", "Login", "RouteID", "WagonID", "Place"]
 
 #   <--------Таблицы--------->
 
 class DB:
     def __init__(self):
-        self.tables = {"users": users_table, "route": route_table, "train": train_table, "wagon": wagon_table}
+        self.tables = {"users": users_table, "route": route_table, "train": train_table, "wagon": wagon_table, "buyers" : buyers_table}
 
     def get_all_from(self, table_name : str) -> list[Model]:
         return self.tables[table_name].get_all()

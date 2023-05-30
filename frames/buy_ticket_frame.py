@@ -31,12 +31,17 @@ class BuyTicket(BaseFrame):
         self.list_to_route_buy_ticket.set("")
         self.list_to_route_buy_ticket.pack()
 
-        self.button_submit_next = tk.CTkButton(self, text="Выбрать рейс и перейти далее", font=("Arial Bold", 15), fg_color="#FF7F50")
+        self.button_submit_next = tk.CTkButton(self, text="Выбрать рейс и перейти далее", font=("Arial Bold", 15), fg_color="#FF7F50",
+                                               command= lambda : self.before_proceed())
         self.button_submit_next.pack(padx=8, pady=10)
 
         self.timetable_button_submit = tk.CTkButton(self, text="Вернуться назад", fg_color="#FF6347",
-                                                               font=("Arial Bold", 15))
+                                                               font=("Arial Bold", 15), command= lambda : controller.click_away_from_ticket_buy())
         self.timetable_button_submit.pack(padx=100, pady=10)
 
 
         self.pack()
+
+    def before_proceed(self):
+        if len(self.list_to_route_buy_ticket.get().strip()) != 0:
+            self.controller.select_route_and_proceed()

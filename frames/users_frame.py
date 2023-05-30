@@ -19,7 +19,7 @@ class UserFrame(BaseFrame):
         self.user_main_window_button_purchase_tickets = tk.CTkButton(self, text="Приобретённые билеты", fg_color="#FF7F50",
                                                                   width=200,
                                                                   height=35,
-                                                                  font=("Arial Bold", 15))
+                                                                  font=("Arial Bold", 15), command = lambda : controller.switch_to_frame("ShowTicketsFrame"))
         self.user_main_window_button_purchase_tickets.pack(padx=120, pady=30)
 
         self.user_timetable_button_exit_submit = tk.CTkButton(self, text="Выйти из системы", fg_color="#FF6347",
