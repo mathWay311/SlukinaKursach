@@ -10,7 +10,7 @@ class RouteView():
         dir_rect = tk.CTkFrame(parent_frame, height=50, width=385)
 
 
-        label_name = tk.CTkLabel(dir_rect, text=self.model.from_ + " - " + self.model.to_, font=("Roboto", 16))
+        label_name = tk.CTkLabel(dir_rect, text=self.model.from_ + " - " + self.model.to_ + " " + self.model.dept_time, font=("Roboto", 12))
 
 
 

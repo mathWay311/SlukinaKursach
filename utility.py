@@ -48,7 +48,7 @@ def check_route_for_register(beg_city, end_city):
     return 100
 
 def check_ticket(name_, surname_, patronymic_, serial_, number_, login_, route_id_, wagon_id_, place_):
-    if len(serial_) != 4 or len(number_) != 6:
+    if len(serial_) != 4 or len(number_) != 6 or not serial_.isdigit() or not number_.isdigit():
         return 408
     return 100
 

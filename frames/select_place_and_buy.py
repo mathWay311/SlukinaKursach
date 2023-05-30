@@ -71,7 +71,7 @@ class SelectPlaceAndBuy(BaseFrame):
 
 
 
-        self.place_select = tk.CTkComboBox(self, width=300)
+        self.place_select = tk.CTkComboBox(self, width=300, values=[])
         self.place_select.set("")
 
         self.place_select.pack()
@@ -95,19 +95,8 @@ class SelectPlaceAndBuy(BaseFrame):
         self.place_select.configure(values=seats)
 
     def buy_ticket(self):
-        if len(self.wagon_select.get().strip()) == 0:
-            messagebox.showerror("Ошибка", "Вагон не выбран")
-            return
-        if len(self.place_select.get().strip()) == 0:
-            messagebox.showerror("Ошибка", "Место не выбрано")
-            return
-        if len(self.name_entry.get().strip()) == 0:
-            messagebox.showerror("Ошибка", "Не указано имя")
-            return
-        if len(self.surname_entry.get().strip()) == 0:
-            messagebox.showerror("Ошибка", "Не указана фамилия")
-            return
-        if len(self.patronymic_entry.get().strip()) == 0:
-            messagebox.showerror("Ошибка", "Не указано отчество")
+        if len(self.wagon_select.get().strip()) == 0 or len(self.place_select.get().strip()) == 0 or \
+                len(self.name_entry.get().strip()) == 0 or len(self.surname_entry.get().strip()) == 0 or len(self.patronymic_entry.get().strip()) == 0:
+            messagebox.showerror("Ошибка", "Поле не может пустым")
             return
         self.controller.add_new_ticket()

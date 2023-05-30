@@ -149,6 +149,12 @@ class FrameHandler:
 
         code = utility.check_route_for_register(_city_beg, _city_end)
 
+        search = self.bd.search_model("route", "DeptTime", _data)
+
+        if search:
+            messagebox.showerror("Ошибка", "Время занято")
+            return
+
         if code == 100:
             result = self.bd.add_new_record("route", _data + ";" + _city_beg + ";" + _city_end + ";" + _name_train + ";" + _name_machinist + ";")
             if result != False:
@@ -171,7 +177,7 @@ class FrameHandler:
 
             train_id = self.bd.add_new_record("train", train.db_add_string())
             num_coupe_last = 0
-            for i in range(1, int(_num_of_wagons_coupe)):
+            for i in range(1, int(_num_of_wagons_coupe) + 1):
                 coupe_model = WagonModel([0, "Купе", str(i), "", str(train_id)])
                 self.bd.add_new_record("wagon", coupe_model.db_add_string())
                 num_coupe_last = i
@@ -523,7 +529,8 @@ class FrameHandler:
         list_str = []
 
         for ticket in tickets_to_output:
-            list_str.append(str(ticket.id) + " " + ticket.name + " " + ticket.surname + " " + ticket.patronymic + " " + ticket.pass_serial + " " + ticket.pass_number)
+            route = self.bd.search_model("route", "ID", str(ticket.routeID))
+            list_str.append(str(ticket.id) + " " + ticket.name + " " + ticket.surname + " " + ticket.patronymic + " " + ticket.pass_serial + " " + ticket.pass_number + " " + route.from_ + "-" + route.to_ + " " + route.dept_time)
 
         self.showed_frame.ticket_list.configure(values = list_str)
 
