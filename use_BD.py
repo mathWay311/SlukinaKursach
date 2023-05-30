@@ -146,6 +146,16 @@ class Table:
         file.write(write_string)
         return self.id_counter + 1
 
+    def delete_all_where(self, column, text):
+        lines = self.__get_all_lines()
+        del_line = self.search_line("ID", id)
+        file = open(self.path, "w")
+        for line in lines:
+            args = line.split(";")
+            if args[self.column_config.index(column)] != text:
+                file.write(line)
+        file.close()
+
     def alter_record(self, id, column, text):
         lines = self.__get_all_lines()
         isAltered = False
@@ -247,4 +257,6 @@ class DB:
         :param id: ID рейса
         :return:
         """
+        print(str(model.id))
+        self.tables["buyers"].delete_all_where("RouteID", str(model.id))
         self.delete_by_id("route", model.id)

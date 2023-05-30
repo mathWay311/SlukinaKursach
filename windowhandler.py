@@ -38,8 +38,11 @@ from frames.select_place_and_buy import SelectPlaceAndBuy
 from frames.show_tickets_frame import ShowTicketsFrame
 
 from frames.return_ticket_user_frame import ReturnTicketUser
+from frames.machinist_schedule_frame import ShowSchedule
 
 from frames.scrollable_frame import ScrollableFrame
+
+from frames.utility.view_machinist_routes import RouteMachinistView
 
 from tkinter import messagebox
 
@@ -70,7 +73,8 @@ class FrameHandler:
             "AddNewTrain": "Добавление нового поезда",
             "SelectPlaceAndBuy": "Заполните информацию",
             "ShowTicketsFrame" : "Ваши билеты",
-            "ReturnTicketUser" : "Верните ваш билет"
+            "ReturnTicketUser" : "Верните ваш билет",
+            "ShowSchedule" : "Расписание"
         }
 
         self.showed_frame = AuthFrame(root_window, self)
@@ -218,6 +222,14 @@ class FrameHandler:
             wagon = self.bd.search_model("wagon", "Number", ticket.wagonID)
             strings.append(route.dept_time + " " + route.from_ + " - " + route.to_ + " | Вагон:" + wagon.type + " Номер " + str(ticket.wagonID) + " Место: " + ticket.place)
         return strings
+
+    def show_routes_for_machinist(self):
+        routes = self.bd.get_all_from("route")
+
+        for route in routes:
+            if route.machinistName == self.login_entry:
+                route = RouteMachinistView(route, self, self.showed_frame.content_panel.scrollable_frame)
+        self.showed_frame.content_panel.pack()
 
     def show_tickets_for_current_user_withIDS(self):
         tickets = self.bd.get_all_from("buyers")
@@ -417,14 +429,17 @@ class FrameHandler:
         ans = messagebox.askokcancel("Внимание", "Вы уверены?")
         if ans:
             self.bd.delete_route(model)
-            self.show_routes()
+            if self.role == "machinist":
+                self.show_routes_for_machinist()
+                self.switch_to_frame("ShowSchedule")
+            else:
+                self.show_routes()
 
 
     def click_entry_submit(self):
 
         self.login_entry = self.showed_frame.entry_field_login.get()
         password = self.showed_frame.entry_field_password.get()
-
 
         result = self.database.check_login(self.login_entry, password)
 

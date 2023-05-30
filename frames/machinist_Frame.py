@@ -11,7 +11,10 @@ class MachinistFrame(BaseFrame):
         self.machinist_main_window_button_buy_ticket = tk.CTkButton(self, text="Посмотреть расписание", fg_color="#FF7F50",
                                                                   width=200,
                                                                   height=35,
-                                                                  font=("Arial Bold", 15))
+                                                                  font=("Arial Bold", 15),
+                                                                    command=lambda : controller.switch_to_frame("ShowSchedule")
+
+                                                                    )
         self.machinist_main_window_button_buy_ticket.pack(padx=120, pady=30)
 
 
