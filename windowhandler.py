@@ -226,7 +226,7 @@ class FrameHandler:
             route = self.bd.search_model("route", "ID", ticket.routeID)
             print(ticket.wagonID)
             wagon = self.bd.search_model("wagon", "Number", ticket.wagonID)
-            strings.append(route.dept_time + " " + route.from_ + " - " + route.to_ + " | Вагон:" + wagon.type + " Номер " + str(ticket.wagonID) + " Место: " + ticket.place)
+            strings.append(route.dept_time + " " + route.from_ + " - " + route.to_ + " Вагон:" + wagon.type + " Номер " + str(ticket.wagonID) + " Место: " + ticket.place)
         return strings
 
     def show_routes_for_machinist(self):
@@ -249,7 +249,7 @@ class FrameHandler:
             route = self.bd.search_model("route", "ID", ticket.routeID)
             print(ticket.wagonID)
             wagon = self.bd.search_model("wagon", "Number", ticket.wagonID)
-            strings.append(str(ticket.id) + " " + route.dept_time + " " + route.from_ + " - " + route.to_ + " | Вагон:" + wagon.type + " Номер " + str(ticket.wagonID) + " Место: " + ticket.place)
+            strings.append(str(ticket.id) + " " + route.dept_time + " " + route.from_ + " - " + route.to_ + " Вагон:" + wagon.type + " Номер " + str(ticket.wagonID) + " Место: " + ticket.place)
         return strings
 
     def click_away_from_ticket_buy(self):
@@ -545,12 +545,16 @@ class FrameHandler:
         if ans:
             self.bd.delete_by_id("buyers", id)
             self.showed_frame.ticket_list.set("")
+            if self.role == "cashier":
+                self.click_back_to_main_menu_cashier()
+            else:
+                self.click_back_to_main_menu_user()
 
 class MainWindow():
     def __init__ (self):
         self.window = tk.CTk()
         self.window.title('Железнодорожный вокзал')
-        self.window.geometry("600x500")
+        self.window.geometry("600x550")
         self.window.resizable(True, True)
 
         self.database = db.DataBase("BaseData/users.db")
