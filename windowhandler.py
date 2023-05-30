@@ -159,6 +159,7 @@ class FrameHandler:
             result = self.bd.add_new_record("route", _data + ";" + _city_beg + ";" + _city_end + ";" + _name_train + ";" + _name_machinist + ";")
             if result != False:
                 messagebox.showinfo("Уведомление", "Успешно")
+                self.click_back_to_main_menu_admin()
             else:
                 messagebox.showerror("Ошибка", "Ошибка записи")
         else:
@@ -187,6 +188,7 @@ class FrameHandler:
                 self.bd.add_new_record("wagon", placcart_model.db_add_string())
 
             messagebox.showinfo("Уведомление", "Вы добавили поезд " + _name)
+            self.click_back_to_main_menu_admin()
         else:
             messagebox.showerror("Ошибка", utility.errorcodes_descriptions[code])
 

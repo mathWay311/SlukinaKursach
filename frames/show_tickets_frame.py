@@ -30,7 +30,7 @@ class ShowTicketsFrame(BaseFrame):
                                                     command=lambda: controller.click_away_from_ticket_buy())
 
 
-        self.timetable_button_submit2 = tk.CTkButton(self, text="Возврат билетов", fg_color="#FF6347",
+        self.timetable_button_submit2 = tk.CTkButton(self, text="Возврат билетов", fg_color="#FF7F50",
                                                     font=("Arial Bold", 15),
                                                     command=lambda: controller.switch_to_frame("ReturnTicketUser"))
         self.timetable_button_submit2.pack(padx=100, pady=10)
