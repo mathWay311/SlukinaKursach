@@ -499,7 +499,7 @@ class FrameHandler:
             str_results.append(str(model.id) + " " + model.from_ + " - " + model.to_ + " ("+ model.dept_time + ")")
 
         if len(str_results):
-            messagebox.showinfo("Поиск", "Найдено " + str(len(str_results)) + " билетов по вашему запросу")
+            messagebox.showinfo("Поиск", "По вашему запросу найдено билетов: " + str(len(str_results)))
         else:
             messagebox.showerror("Поиск", "Ничего не найдено")
         self.showed_frame.list_to_route_buy_ticket.configure(values=str_results)

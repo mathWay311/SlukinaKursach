@@ -16,6 +16,8 @@ class ShowRoute(BaseFrame):
 
         self.exit_submit = tk.CTkButton(self, text="В главное меню",
                                                                  fg_color="#FF6347",
+                                                                 width=100,
+                                                                 height=40,
                                                                  font=("Arial Bold", 15),
                                                                  command=lambda: controller.click_back_to_main_menu_admin())
 
@@ -23,6 +25,8 @@ class ShowRoute(BaseFrame):
 
         self.add_route = tk.CTkButton(self, text="Создать рейс",
                                                                  fg_color="#FF6347",
+                                                                 width=100,
+                                                                 height=40,
                                                                  font=("Arial Bold", 15),
                                                                  command=lambda: controller.switch_to_frame("AddNewRoute"))
         self.add_route.pack(side = tk.RIGHT, padx = 30, pady = 10)

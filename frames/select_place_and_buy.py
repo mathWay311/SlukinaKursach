@@ -97,6 +97,6 @@ class SelectPlaceAndBuy(BaseFrame):
     def buy_ticket(self):
         if len(self.wagon_select.get().strip()) == 0 or len(self.place_select.get().strip()) == 0 or \
                 len(self.name_entry.get().strip()) == 0 or len(self.surname_entry.get().strip()) == 0 or len(self.patronymic_entry.get().strip()) == 0:
-            messagebox.showerror("Ошибка", "Поле не может пустым")
+            messagebox.showerror("Ошибка", "Поле не может быть пустым")
             return
         self.controller.add_new_ticket()
