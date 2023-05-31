@@ -86,10 +86,19 @@ class AddNewRoute(BaseFrame):
         self.pack()
 
     def before_adding_route_check(self):
-        if self.__check_time():
-            self.controller.add_new_route()
-        else:
-            messagebox.showerror("Рейс не создан", "Произошла ошибка при введении времени. Рейс не будет создан.")
+        if not self.__check_time():
+            messagebox.showerror("Рейс не создан", "Проверьте формат времени (ДД.ММ.ГГГГ ЧЧ:ММ)")
+            return
+
+        if not self.__check_fields():
+            messagebox.showerror("Ошибка", "Поле не может пустым")
+            return
+        self.controller.add_new_route()
+
+    def __check_fields(self):
+        if len(self.entry_city_beg.get().strip()) == 0 or len(self.entry_city_end.get().strip()) == 0 or len(self.entry_name_train.get().strip()) == 0 or len(self.entry_name_machinist.get().strip()) == 0:
+            return False
+        return True
 
     def __check_time(self):
 
@@ -103,16 +112,14 @@ class AddNewRoute(BaseFrame):
                             try:
                                 start_args_date[i] = int(start_args_date[i])
                             except:
-                                messagebox.showerror("Ошибка",
-                                                     "Недопустимый формат времени!\n Проверьте на соответствие шаблону (DD.MM.YYYY HH:MM)\nПроверьте, что вводите цифры!")
+
                                 return False
                         start_args_time = date_start_str.split(" ")[1].split(":")
                         for i in range(len(start_args_time)):
                             try:
                                 start_args_time[i] = int(start_args_time[i])
                             except:
-                                messagebox.showerror("Ошибка",
-                                                     "Недопустимый формат времени!\n Проверьте на соответствие шаблону (DD.MM.YYYY HH:MM)\nПроверьте, что вводите цифры!")
+
                                 return False
 
 
@@ -124,8 +131,6 @@ class AddNewRoute(BaseFrame):
 
 
                         if ((date_start - datetime.datetime.now()).total_seconds() <= 0):
-                            messagebox.showerror("Ошибка",
-                                                 "Дата начала раньше текущей даты или точно совпадает с текущим временем.")
                             return False
                         return True
             return False
