@@ -138,7 +138,7 @@ class Table:
                 file.write(line)
         file.close()
 
-    def add_record(self,record) -> int:
+    def add_record(self, record) -> int:
         self.id_counter_refresh()
         file = open(self.path, "a")
         record = record.replace("\n", r"\\n")

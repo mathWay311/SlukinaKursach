@@ -16,6 +16,8 @@ class ShowTrain(BaseFrame):
 
         self.exit_submit = tk.CTkButton(self, text="В главное меню",
                                                                  fg_color="#FF6347",
+                                                                width=100,
+                                                                height=40,
                                                                  font=("Arial Bold", 15),
                                                                  command=lambda: controller.click_back_to_main_menu_admin())
 
@@ -23,6 +25,8 @@ class ShowTrain(BaseFrame):
 
         self.add_train = tk.CTkButton(self, text="Создать поезд",
                                                                  fg_color="#FF6347",
+                                                                width=100,
+                                                                height=40,
                                                                  font=("Arial Bold", 15),
                                                                  command=lambda: controller.switch_to_frame("AddNewTrain"))
         self.add_train.pack(side = tk.RIGHT, padx = 30, pady = 10)
